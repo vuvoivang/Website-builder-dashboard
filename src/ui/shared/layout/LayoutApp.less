@@ -1,0 +1,65 @@
+.cms-layout-app {
+  min-height: 100vh;
+  &-login {
+    padding-top: 20vh;
+    display: flex;
+    align-items: center;
+    .ant-tabs {
+      min-width: 600px;
+    }
+  }
+  .trigger {
+    padding: 0 24px;
+    font-size: 18px;
+    line-height: 64px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .trigger:hover {
+    color: #003a8c;
+  }
+
+  .logo {
+    height: 52px;
+    margin: 16px;
+    background-image: url(../../assets/images/logo-fiza-2.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  .site-layout .site-layout-background {
+    background: #fff;
+    padding: 0 24px 24px;
+  }
+
+  .site-layout .site-layout-background-header {
+    background: #fff;
+    padding: 0 24px 24px;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+.ant-layout-sider-collapsed {
+  .logo {
+    background-image: url(../../assets/images/logo-fiza-2.svg) !important;
+  }
+}
+
+.action-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 16px;
+  .btn-logout {
+    margin-left: 20px;
+  }
+}
+
+.app-type-menu {
+  padding-bottom: 16px;
+  .ant-menu-item {
+    flex-grow: 1;
+    text-align: center;
+  }
+}

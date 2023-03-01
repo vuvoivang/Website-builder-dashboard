@@ -1,0 +1,38 @@
+.colorful-2 {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(45deg, #0000 50%, #00aaff 0),
+        linear-gradient(-45deg, #0000 50%, #ff00aa 0), #00aaff;
+    background-size: 200% 200%;
+    background-repeat: no-repeat;
+    animation: co2 1.5s infinite;
+}
+
+@keyframes co2 {
+    0% {
+        background-position: bottom left, bottom right;
+    }
+    30%,
+    50% {
+        background-position: bottom left, top left;
+    }
+    80%,
+    100% {
+        background-position: top right, top left;
+    }
+}
+
+.loading-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 40px;
+
+    &.is-fixed {
+        position: fixed;
+        top: 48px;
+        left: calc(50%);
+        transform: translateX(-50%);
+    }
+}
