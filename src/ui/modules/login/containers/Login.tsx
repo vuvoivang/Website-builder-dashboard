@@ -30,12 +30,12 @@ function Login() {
   return (
     <Layout className="cms-layout-app cms-layout-app-login">
       <Tabs defaultActiveKey="2">
-        <Tabs.TabPane tab="Login by Zalo" key="1">
+        <Tabs.TabPane tab="Login with Google" key="1">
           <Button
             type="primary"
             onClick={() => message.info('Tính năng chưa phát triển')}
           >
-            Login zalo
+            Login with google
           </Button>
         </Tabs.TabPane>
         <Tabs.TabPane tab="Login by account" key="2">

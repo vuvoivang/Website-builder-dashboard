@@ -64,7 +64,7 @@ function LayoutApp() {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const query = useQuery();
   const { checkSession, logout } = useAuth();
-  let queryAppType = query.get('app_type');
+  let queryAppType = query.get('app_type') as string;
   if (!['mobile', 'website'].includes(queryAppType)) {
     queryAppType = 'mobile';
   }
@@ -145,7 +145,7 @@ function LayoutApp() {
             collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
             {
               className: 'trigger',
-              // onClick: () => setCollapsed(!collapsed),
+              onClick: () => setCollapsed(!collapsed),
             }
           )}
           <div className="action-container">

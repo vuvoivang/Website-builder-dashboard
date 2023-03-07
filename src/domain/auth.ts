@@ -5,5 +5,5 @@ export interface ILoginData {
 
 export interface ILoginResponseData {
   name: string;
-  roles: string;
+  roles: string[];
 }
