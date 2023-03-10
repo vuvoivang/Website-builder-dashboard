@@ -30,11 +30,18 @@ const UpdateWebCategory = lazy(
 
 const Login = lazy(() => import("../ui/modules/login/containers/Login"));
 
+const ViewDynamicData = lazy(() => import("../ui/modules/dynamic-data/containers/ViewDynamicData"));
+
 export const MAIN_ROUTES = [
   {
     path: "/login",
     name: "login",
     element: Login,
+  },
+  {
+    path: "/dynamic-data",
+    name: "dynamicData",
+    element: ViewDynamicData,
   },
   {
     path: "/web-article/list",

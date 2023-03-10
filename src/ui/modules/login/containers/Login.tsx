@@ -23,7 +23,7 @@ function Login() {
 
   useEffect(() => {
     if (roles && name) {
-      navigate('/admin/web-article/list');
+      navigate('admin/dynamic-data');
     }
   }, []);
 

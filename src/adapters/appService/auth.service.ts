@@ -39,7 +39,7 @@ export function useAuth() {
         }
         dispatch(setUserInfo(authData.data));
         message.success("Đăng nhập thành công!");
-        navigate("/admin/web-article/list");
+        navigate("/admin/dynamic-data");
       
         return authData;
     },
