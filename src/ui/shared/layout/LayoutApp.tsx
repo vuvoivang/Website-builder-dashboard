@@ -9,7 +9,7 @@ import {
 import { Layout, Menu, Button } from 'antd';
 import { pathToRegexp } from 'path-to-regexp';
 import { useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 
 import './LayoutApp.less';
 
@@ -30,7 +30,7 @@ const filterRole = (roles) => (menu) => {
     : true;
 };
 
-const generateMenus = (data, appType) => {
+const generateMenus = (data) => {
   return data.map((item) => {
     if (item.children) {
       return (
@@ -43,13 +43,13 @@ const generateMenus = (data, appType) => {
             </>
           }
         >
-          {generateMenus(item.children, appType)}
+          {generateMenus(item.children)}
         </Menu.SubMenu>
       );
     }
     return (
       <Menu.Item key={item.id}>
-        <Link to={`${item.route}?app_type=${appType}` || '#'}>
+        <Link to={`${item.route}` || '#'}>
           {!!item.icon && <item.icon />}
           <span>{item.name}</span>
         </Link>
@@ -64,13 +64,8 @@ function LayoutApp() {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const query = useQuery();
   const { checkSession, logout } = useAuth();
-  let queryAppType = query.get('app_type') as string;
-  if (!['mobile', 'website'].includes(queryAppType)) {
-    queryAppType = 'mobile';
-  }
-  const [appType, setAppType] = useState<any>(queryAppType);
 
-  const menus = appType === 'mobile' ? websiteMenus : websiteMenus;
+  const menus = websiteMenus;
 
   const filteredMenus = menus.filter(filterRole(roles));
 
@@ -95,45 +90,23 @@ function LayoutApp() {
       });
   }, []);
 
-  const navigationMenu = [
-    {
-      id: 'mobile',
-      name: 'Mobile',
-      icon: <DownloadOutlined />,
-    },
-    {
-      id: 'website',
-      name: 'Website',
-      icon: <SettingOutlined />,
-    },
-  ];
-
-  const handleAppTypeMenuClick = (e) => {
-    setAppType(e.key);
-    navigate(`/admin?app_type=${e.key}`, { replace: true });
-  };
-
+  const currentPath = useLocation().pathname;
+  console.log(currentPath);
   return (
     <Layout className="cms-layout-app">
-      <Sider trigger={null} collapsible collapsed={collapsed} width={300}>
-        <div className="logo" />
-        <Menu
-          className="app-type-menu"
-          theme="dark"
-          mode="horizontal"
-          selectedKeys={[appType]}
-          onClick={handleAppTypeMenuClick}
-        >
-          {navigationMenu.map((item) => {
-            return (
-              <Menu.Item key={item.id}>
-                <span>{item.name}</span>
-              </Menu.Item>
-            );
-          })}
-        </Menu>
-        <Menu mode="inline" theme="dark" selectedKeys={selectedKeys}>
-          {generateMenus(menuTree, appType)}
+      <Sider
+        theme="light"
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        width={300}
+      >
+        <div className="header-container">
+          <div className="logo" />
+          <h2>Buildify</h2>
+        </div>
+        <Menu mode="inline" theme="light" selectedKeys={selectedKeys}>
+          {generateMenus(menuTree)}
         </Menu>
       </Sider>
       <Layout className="site-layout">
@@ -141,13 +114,19 @@ function LayoutApp() {
           className="site-layout-background-header"
           style={{ padding: 0 }}
         >
-          {React.createElement(
-            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-            {
-              className: 'trigger',
-              onClick: () => setCollapsed(!collapsed),
-            }
-          )}
+          <div className="site-layout-background-header_left">
+            {React.createElement(
+              collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+              {
+                className: 'trigger',
+                onClick: () => setCollapsed(!collapsed),
+              }
+            )}
+            <h1>
+              {MAIN_ROUTES.find((item) => item.path === currentPath)?.title}
+            </h1>
+          </div>
+
           <div className="action-container">
             <Button className="btn-logout" size="middle" onClick={logout}>
               Logout
