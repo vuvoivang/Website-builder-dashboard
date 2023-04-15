@@ -1,12 +1,12 @@
-import { message } from "antd";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { message } from 'antd';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-import { getWithPath, postWithPath } from "~/src/adapters/api.http";
-import { setUserInfo } from "~/src/adapters/redux/actions/auth";
-import { ResponseData } from "~/src/constant";
-import API from "~/src/constant/api";
-import { ILoginData, ILoginResponseData } from "~/src/domain/auth";
+import { getWithPath, postWithPath } from '~/src/adapters/api.http';
+import { setUserInfo } from '~/src/adapters/redux/actions/auth';
+import { ResponseData } from '~/src/constant';
+import API from '~/src/constant/api';
+import { ILoginData, ILoginResponseData } from '~/src/domain/auth';
 
 export function useAuth() {
   const dispatch = useDispatch();
@@ -27,21 +27,20 @@ export function useAuth() {
       // } else {
       //   message.error("Đăng nhập thất bại!");
       // }
-        const authData = {
-          msg: "Login success",
-          code: 0,
-          data: {
-            name: "admin",
-            roles: ["admin"],
-          },
-          success: true,
-          
-        }
-        dispatch(setUserInfo(authData.data));
-        message.success("Đăng nhập thành công!");
-        navigate("/admin/dynamic-data");
-      
-        return authData;
+      const authData = {
+        msg: 'Login success',
+        code: 0,
+        data: {
+          name: 'admin',
+          roles: ['admin'],
+        },
+        success: true,
+      };
+      dispatch(setUserInfo(authData.data));
+      message.success('Đăng nhập thành công!');
+      navigate('/admin/dynamic-data');
+
+      return authData;
     },
     async checkSession(): Promise<ResponseData<ILoginResponseData>> {
       // const resp = await postWithPath(`${API.AUTH.POST.SESSION}`, {});
@@ -56,17 +55,17 @@ export function useAuth() {
       // }
       // return resp;
       const authData = {
-        msg: "Check session success",
+        msg: 'Check session success',
         code: 0,
         data: {
-          name: "admin",
-          roles: ["admin"],
+          name: 'admin',
+          roles: ['admin'],
         },
         success: true,
       };
 
       dispatch(setUserInfo(authData.data));
-    
+
       return authData;
     },
     async logout(): Promise<ResponseData<any>> {
@@ -83,9 +82,8 @@ export function useAuth() {
       //   throw new Error(JSON.stringify(resp));
       // }
 
-
       const logoutData = {
-        msg: "Logout success",
+        msg: 'Logout success',
         code: 0,
         data: null,
         success: true,
@@ -93,11 +91,11 @@ export function useAuth() {
 
       dispatch(
         setUserInfo({
-          name: "",
+          name: '',
           roles: [],
         })
       );
-      navigate("/admin/login");
+      navigate('/admin/login');
       return logoutData;
     },
   };

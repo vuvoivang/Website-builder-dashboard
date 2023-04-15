@@ -15,7 +15,7 @@ import './LayoutApp.less';
 
 import { useAuth } from '~/src/adapters/appService/auth.service';
 import { authSelector } from '~/src/adapters/redux/selectors/auth';
-import { MAIN_ROUTES, mobileMenus, websiteMenus } from '~/src/constant/menu';
+import { MAIN_ROUTES, websiteMenus } from '~/src/constant/menu';
 import useQuery from '~/src/hooks/useQuery';
 import { arrayToTree, queryAncestors } from '~/src/utils/menu';
 import { renderRoutes } from '~/src/utils/route';
@@ -70,7 +70,7 @@ function LayoutApp() {
   }
   const [appType, setAppType] = useState<any>(queryAppType);
 
-  const menus = appType === 'mobile' ? mobileMenus : websiteMenus;
+  const menus = appType === 'mobile' ? websiteMenus : websiteMenus;
 
   const filteredMenus = menus.filter(filterRole(roles));
 

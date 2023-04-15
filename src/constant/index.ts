@@ -24,13 +24,3 @@ export enum ApiStatus {
   SUCCESS = 0,
   UNAUTHORIZED = 403,
 }
-
-export enum StateStatus {
-  ACTIVE = 0,
-  INACTIVE = 1,
-}
-
-export const MAP_STATE_STATUS = [
-  [StateStatus.ACTIVE, "Active"],
-  [StateStatus.INACTIVE, "Inactive"],
-];

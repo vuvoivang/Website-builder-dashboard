@@ -4,19 +4,14 @@ import { EditOutlined } from '@ant-design/icons';
 import { Button, Space } from 'antd';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
-import { useWebArticle } from '~/src/adapters/appService/webArticle.service';
-import { useWebCategory } from '~/src/adapters/appService/webCategory.service';
-import { WebArticle } from '~/src/domain/webArticle';
-import { columnTableArticle } from '~/src/ui/modules/web-article/components/table-view-article/props';
+
 import Loading from '~/src/ui/shared/loading';
 import BaseTable from '~/src/ui/shared/tables';
 
 function TableViewDocument() {
   const navigate = useNavigate();
-  const { getAllWebArticles } = useWebArticle();
-  const { getAllWebCategories } = useWebCategory();
 
-  const [listArticles, setListArticles] = useState<WebArticle[]>();
+  const [listArticles, setListArticles] = useState<any[]>();
   const [loading, setLoading] = useState<boolean>(true);
 
   const handleGetDataTable = async () => {
@@ -36,7 +31,7 @@ function TableViewDocument() {
   }, []);
 
   const columnTableArticleProps: any = [
-    ...columnTableArticle,
+    // ...columnTableArticle,
     {
       title: 'Actions',
       dataIndex: 'action',

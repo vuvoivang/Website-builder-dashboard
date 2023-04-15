@@ -3,7 +3,6 @@ import React from 'react';
 import { ColumnType } from 'antd/lib/table';
 import dayjs from 'dayjs';
 
-import { StateStatus } from '~/src/constant';
 
 export const columnTableArticle: ColumnType<any>[] = [
   {
@@ -33,7 +32,7 @@ export const columnTableArticle: ColumnType<any>[] = [
     dataIndex: 'state',
     width: 100,
     render: (value) => {
-      return <p>{value === StateStatus.ACTIVE ? 'Active' : 'Inactive'}</p>;
+      // return <p>{value === StateStatus.ACTIVE ? 'Active' : 'Inactive'}</p>;
     },
   },
   {
