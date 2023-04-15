@@ -91,7 +91,7 @@ function LayoutApp() {
   }, []);
 
   const currentPath = useLocation().pathname;
-  console.log(currentPath);
+  const userInfo = useSelector(authSelector);
   return (
     <Layout className="cms-layout-app">
       <Sider
@@ -128,6 +128,7 @@ function LayoutApp() {
           </div>
 
           <div className="action-container">
+            <h3 className="action-container_greeting">Hi {userInfo.name}!</h3>
             <Button className="btn-logout" size="middle" onClick={logout}>
               Logout
             </Button>

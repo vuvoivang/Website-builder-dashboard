@@ -31,7 +31,7 @@ export function useAuth() {
         msg: 'Login success',
         code: 0,
         data: {
-          name: 'admin',
+          name: 'Hoàng Vũ',
           roles: ['admin'],
         },
         success: true,
@@ -58,7 +58,7 @@ export function useAuth() {
         msg: 'Check session success',
         code: 0,
         data: {
-          name: 'admin',
+          name: 'Hoàng Vũ',
           roles: ['admin'],
         },
         success: true,
