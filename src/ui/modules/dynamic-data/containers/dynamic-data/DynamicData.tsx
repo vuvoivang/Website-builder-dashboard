@@ -1,75 +1,63 @@
-import { Tabs } from 'antd';
-import { useRef, useState } from 'react';
+import { Tabs, Button } from 'antd';
+import { useMemo, useRef, useState } from 'react';
 import { MOCK_COLLECTIONS, MOCK_DOCUMENTS } from '~/src/mock/dynamic-data';
 import { mappingDocumentsToCollections } from '~/src/utils';
 import './DynamicData.less';
-import { UserOutlined } from '@ant-design/icons';
-import { AutoComplete, Input } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { AutoComplete, Input, Modal, Form } from 'antd';
+import FormAddCollection from '../../components/form-add-collection/FormAddCollection';
 
-const renderTitle = (title: string) => (
-  <span>
-    {title}
-  </span>
-);
+const renderTitle = (title: string) => <span>{title}</span>;
+const renderFieldsOfDocument = (document) => {
+  return Object.entries(document).map(([key, value]) => {
+    return (
+      <li key={key}>
+        {key}: {(value as any)}
+      </li>
+    );
+  });
+};
 
+const renderTabsCollectionsAndDocuments = (collections) => {
+  return collections.map((collection) => {
+    const { id, name, documents } = collection;
+    return {
+      label: name,
+      key: name,
+      children: documents.map((document) => {
+        const { id: documentId, data } = document;
+        return (
+          <ul key={`${id}-${documentId}`}>
+            {renderFieldsOfDocument({ documentId, ...data })}
+          </ul>
+        );
+      }),
+    };
+  });
+};
 
 function DynamicData() {
-  const [activeCollectionName, setActiveCollectionName] = useState(MOCK_COLLECTIONS[0].name);
+  const [openModalCreateCollection, setOpenModalCreateCollection] = useState(false);
+  const [openModalCreateDocument, setOpenModalCreateDocument] = useState(false);
+
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const [activeCollectionName, setActiveCollectionName] = useState(
+    MOCK_COLLECTIONS[0].name
+  );
   const [valueSearchCollection, setValueSearchCollection] = useState('');
 
   const [collections, setCollections] = useState(MOCK_COLLECTIONS);
   const [documents, setDocuments] = useState(MOCK_DOCUMENTS);
 
-  let refSearchCollection = useRef();
+  const refSearchCollection = useRef();
 
-  const renderFieldsOfDocument = (document) => {
-    return Object.entries(document).map(([key, value]) => {
-      return (
-        <li key={key}>
-          {key}: {value}
-        </li>
-      );
-    });
-  };
-  const renderTabsCollectionsAndDocuments = (collections) => {
-    return collections.map((collection) => {
-      const { id, name, documents } = collection;
-      return {
-        label: name,
-        key: name,
-        children: documents.map((document) => {
-          const { id: documentId, data } = document;
-          return (
-            <ul key={`${id}-${documentId}`}>
-              {renderFieldsOfDocument({ documentId, ...data })}
-            </ul>
-          );
-        }),
-      };
-    });
-  };
-  const listItemTabs = renderTabsCollectionsAndDocuments(
-    mappingDocumentsToCollections(collections, documents)
-  );
-  
+  const formCreateCollection = Form.useForm()[0];
 
-  const collectionOptions = collections.map((collection) => {
-    return {
-      label: renderTitle(collection.name),
-      value : collection.name,
-    }
-  });
-
-
-  const handleOnSelectOption = (value) => {
-    setActiveCollectionName(value);
-    setValueSearchCollection('');
-    if(refSearchCollection?.current) refSearchCollection.current?.blur();
-  }
-  
   const renderTabBar = (props, DefaultTabBar) => {
     return (
-      <div>
+      <div className='custom-tab-bar'>
+        <Button onClick={() => setOpenModalCreateCollection(true)}><PlusOutlined />Create Collection</Button>
         <AutoComplete
           popupClassName="certain-category-search-dropdown"
           dropdownMatchSelectWidth={500}
@@ -88,17 +76,66 @@ function DynamicData() {
           {...props}
           style={{
             top: 20,
+            width: '100%',
           }}
         />
       </div>
     );
   };
-  const handleOnTabClick = function(key: string, event) {
+
+  const listItemTabs = useMemo(() => renderTabsCollectionsAndDocuments(
+    mappingDocumentsToCollections(collections, documents)
+  ), [collections, documents]);
+
+  const collectionOptions = collections.map((collection) => {
+    return {
+      label: renderTitle(collection.name),
+      value: collection.name,
+    };
+  });
+
+  const handleOnSelectOption = (value) => {
+    setActiveCollectionName(value);
+    setValueSearchCollection('');
+    if (refSearchCollection?.current) (refSearchCollection.current as any)?.blur();
+  };
+
+  const handleOnTabClick = function (key: string, event) {
     setActiveCollectionName(key);
+  };
+
+
+  const handleOkModalCreateCollection = () => {
+    formCreateCollection.submit();
+
+  }
+  const handleCancelModalCreateCollection = () => {
+    setOpenModalCreateCollection(false);
+  }
+
+  const handleCreateCollection = () => {
+
+  }
+
+  const onFinishCreateCollection = (values: any) => {
+    console.log('Received values of form:', values);
+    // call api
+    setConfirmLoading(true);
+    handleCreateCollection();
+    setConfirmLoading(false);
+    setOpenModalCreateCollection(false);
+  };
+
+  const handleOkModalCreateDocument = () => {
+    setOpenModalCreateDocument(false);
+
+  }
+  const handleCancelModalCreateDocument = () => {
+
   }
 
   return (
-    <div>
+    <div className='dynamic-data-container'>
       <Tabs
         activeKey={activeCollectionName}
         renderTabBar={renderTabBar}
@@ -106,6 +143,31 @@ function DynamicData() {
         items={listItemTabs}
         onTabClick={handleOnTabClick}
       />
+
+      <Modal
+        title="Create a new collection"
+        open={openModalCreateCollection}
+        onOk={handleOkModalCreateCollection}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancelModalCreateCollection}
+        cancelText="Cancel"
+        okText="Create"
+        width={800}
+      >
+        <FormAddCollection formCreateCollection={formCreateCollection} loading={confirmLoading} onFinishCreateCollection={onFinishCreateCollection} collections={collections} />
+      </Modal>
+
+      <Modal
+        title="Fill in the information to create a new document"
+        open={openModalCreateDocument}
+        onOk={handleOkModalCreateDocument}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancelModalCreateDocument}
+        cancelText="Cancel"
+        okText="Create"
+      >
+
+      </Modal>
     </div>
   );
 }
