@@ -12,7 +12,7 @@ import FormBuilder from '~/src/ui/shared/forms/FormBuilder';
 function Login() {
   const { loginByAccount } = useAuth();
   const navigate = useNavigate();
-  const { roles, name } = useSelector(authSelector);
+  const { role, name } = useSelector(authSelector);
   const onFinish = (values: any) => {
     loginByAccount(values);
   };
@@ -22,7 +22,7 @@ function Login() {
   };
 
   useEffect(() => {
-    if (roles && name) {
+    if (role && name) {
       navigate('admin/dynamic-data');
     }
   }, []);

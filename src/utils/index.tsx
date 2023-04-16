@@ -188,3 +188,22 @@ export function getCookie(name) {
 
 // use reverse map to create the type from enum's values
 export type ReverseMap<T> = T[keyof T];
+
+
+export const mappingDocumentsToCollections = (collections,documents ) => {
+  const mappingDocumentsByCollectionsIds = documents.reduce((acc, document) => {
+    const { collectionId } = document;
+    if (!acc[collectionId]) {
+      acc[collectionId] = [];
+    }
+    acc[collectionId].push(document);
+    return acc;
+  }, {});
+  return collections.map((collection) => {
+    const { id } = collection;
+    return {
+      ...collection,
+      documents: mappingDocumentsByCollectionsIds[id],
+    };
+  });
+}
