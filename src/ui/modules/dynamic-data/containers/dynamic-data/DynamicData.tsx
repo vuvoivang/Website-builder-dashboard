@@ -6,6 +6,7 @@ import './DynamicData.less';
 import { PlusOutlined } from '@ant-design/icons';
 import { AutoComplete, Input, Modal, Form } from 'antd';
 import FormAddCollection from '../../components/form-add-collection/FormAddCollection';
+import FormAddDocument from '../../components/form-add-document/FormAddDocument';
 
 const renderTitle = (title: string) => <span>{title}</span>;
 const renderFieldsOfDocument = (document) => {
@@ -18,20 +19,26 @@ const renderFieldsOfDocument = (document) => {
   });
 };
 
-const renderTabsCollectionsAndDocuments = (collections) => {
+const renderTabsCollectionsAndDocuments = (collections, setOpenModalCreateDocument, filteredKey = undefined, filteredData = undefined) => {
   return collections.map((collection) => {
     const { id, name, documents } = collection;
+    const filteredDocuments = (filteredKey && filteredData) ? documents.filter((doc) => {
+      return doc.data[filteredKey]?.includes(filteredData);
+    }) : documents;
     return {
       label: name,
       key: name,
-      children: documents.map((document) => {
-        const { id: documentId, data } = document;
-        return (
-          <ul key={`${id}-${documentId}`}>
-            {renderFieldsOfDocument({ documentId, ...data })}
-          </ul>
-        );
-      }),
+      children: <>
+        <Button onClick={() => setOpenModalCreateDocument(true)}><PlusOutlined />Create Document</Button>
+        {filteredDocuments.map((document) => {
+          const { id: documentId, data } = document;
+          return (
+            <ul key={`${id}-${documentId}`}>
+              {renderFieldsOfDocument({ documentId, ...data })}
+            </ul>
+          );
+        })}
+      </>,
     };
   });
 };
@@ -53,6 +60,9 @@ function DynamicData() {
   const refSearchCollection = useRef();
 
   const formCreateCollection = Form.useForm()[0];
+  const formCreateDocument = Form.useForm()[0];
+
+  const currentCollection = collections.find((collection) => collection.name === activeCollectionName);
 
   const renderTabBar = (props, DefaultTabBar) => {
     return (
@@ -84,7 +94,8 @@ function DynamicData() {
   };
 
   const listItemTabs = useMemo(() => renderTabsCollectionsAndDocuments(
-    mappingDocumentsToCollections(collections, documents)
+    mappingDocumentsToCollections(collections, documents), setOpenModalCreateDocument,
+    'pKey1', 'Key 1'
   ), [collections, documents]);
 
   const collectionOptions = collections.map((collection) => {
@@ -107,7 +118,6 @@ function DynamicData() {
 
   const handleOkModalCreateCollection = () => {
     formCreateCollection.submit();
-
   }
   const handleCancelModalCreateCollection = () => {
     setOpenModalCreateCollection(false);
@@ -117,8 +127,8 @@ function DynamicData() {
 
   }
 
-  const onFinishCreateCollection = (values: any) => {
-    console.log('Received values of form:', values);
+  const onFinishCreateCollection = async (values: any) => {
+    console.log('Received values of collection form:', values);
     // call api
     setConfirmLoading(true);
     handleCreateCollection();
@@ -127,12 +137,25 @@ function DynamicData() {
   };
 
   const handleOkModalCreateDocument = () => {
-    setOpenModalCreateDocument(false);
-
+    formCreateDocument.submit();
   }
   const handleCancelModalCreateDocument = () => {
-
+    setOpenModalCreateDocument(false);
   }
+  const handleCreateDocument = () => {
+  }
+  const onFinishCreateDocument = async (values: any) => {
+    console.log('Received values of document form:', values);
+    const data = {
+      ...values,
+      collectionId: currentCollection.id,
+    }
+    // call api
+    setConfirmLoading(true);
+    handleCreateDocument();
+    setConfirmLoading(false);
+    setOpenModalCreateDocument(false);
+  };
 
   return (
     <div className='dynamic-data-container'>
@@ -158,15 +181,17 @@ function DynamicData() {
       </Modal>
 
       <Modal
-        title="Fill in the information to create a new document"
+        title="Create a new document"
         open={openModalCreateDocument}
         onOk={handleOkModalCreateDocument}
         confirmLoading={confirmLoading}
         onCancel={handleCancelModalCreateDocument}
         cancelText="Cancel"
         okText="Create"
+        width={800}
       >
-
+        <h4>Fill all fields' values to create a new document of this collection</h4>
+        <FormAddDocument keys={currentCollection.dataKeys} formCreateDocument={formCreateDocument} loading={confirmLoading} onFinishCreateDocument={onFinishCreateDocument} />
       </Modal>
     </div>
   );
