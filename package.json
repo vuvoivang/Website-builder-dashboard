@@ -17,11 +17,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-    "@ckeditor/ckeditor5-build-classic": "^29.0.0",
-    "@ckeditor/ckeditor5-react": "3.0.2",
     "antd": "4.24.7",
     "antd-dayjs-webpack-plugin": "^1.0.6",
-    "ckeditor5-custom-build": "./ckeditor5-custom-build",
     "dayjs": "^1.11.6",
     "lodash.clonedeep": "^4.5.0",
     "path-to-regexp": "^6.2.1",

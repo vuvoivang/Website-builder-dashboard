@@ -18,8 +18,8 @@ export function useAuth() {
       // const resp = await postWithPath(`${API.AUTH.POST.LOGIN}`, {}, data);
       // if (resp.success) {
       //   const auth = resp.data;
-      //   if (auth.roles) {
-      //     auth.roles = JSON.parse(auth.roles);
+      //   if (auth.role) {
+      //     auth.role = JSON.parse(auth.role);
       //   }
       //   dispatch(setUserInfo(auth));
       //   message.success("Đăng nhập thành công!");
@@ -32,7 +32,7 @@ export function useAuth() {
         code: 0,
         data: {
           name: 'Hoàng Vũ',
-          roles: ['admin'],
+          role: 'admin',
         },
         success: true,
       };
@@ -46,8 +46,8 @@ export function useAuth() {
       // const resp = await postWithPath(`${API.AUTH.POST.SESSION}`, {});
       // if (resp.success) {
       //   const auth = resp.data;
-      //   if (auth.roles) {
-      //     auth.roles = JSON.parse(auth.roles);
+      //   if (auth.role) {
+      //     auth.role = JSON.parse(auth.role);
       //   }
       //   dispatch(setUserInfo(auth));
       // } else {
@@ -59,7 +59,7 @@ export function useAuth() {
         code: 0,
         data: {
           name: 'Hoàng Vũ',
-          roles: ['admin'],
+          role: 'admin',
         },
         success: true,
       };
@@ -74,7 +74,7 @@ export function useAuth() {
       //   dispatch(
       //     setUserInfo({
       //       name: "",
-      //       roles: [],
+      //       role: [],
       //     })
       //   );
       //   navigate("/admin/login");
@@ -92,7 +92,7 @@ export function useAuth() {
       dispatch(
         setUserInfo({
           name: '',
-          roles: [],
+          role: '',
         })
       );
       navigate('/admin/login');

@@ -6,7 +6,7 @@ import { ROLE } from "./role";
 
 const Login = lazy(() => import("../ui/modules/login/containers/Login"));
 
-const DynamicData = lazy(() => import("../ui/modules/dynamic-data/containers/DynamicData"));
+const DynamicData = lazy(() => import("../ui/modules/dynamic-data/containers/dynamic-data/DynamicData"));
 const DynamicDataCollection = lazy(() => import("../ui/modules/dynamic-data/containers/DynamicDataCollection"));
 const DynamicDataDocument = lazy(() => import("../ui/modules/dynamic-data/containers/DynamicDataDocument"));
 

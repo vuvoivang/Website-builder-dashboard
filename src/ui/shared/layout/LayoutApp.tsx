@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-  DownloadOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  SettingOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Button } from 'antd';
 import { pathToRegexp } from 'path-to-regexp';
@@ -22,11 +20,9 @@ import { renderRoutes } from '~/src/utils/route';
 
 const { Header, Sider, Content } = Layout;
 
-const filterRole = (roles) => (menu) => {
+const filterRole = (role) => (menu) => {
   return menu.role
-    ? roles.some((role) => {
-        return menu.role.includes(role);
-      })
+    ? menu.role.includes(role)
     : true;
 };
 
@@ -60,14 +56,14 @@ const generateMenus = (data) => {
 
 function LayoutApp() {
   const navigate = useNavigate();
-  const { roles, name } = useSelector(authSelector);
+  const { role , name } = useSelector(authSelector);
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const query = useQuery();
   const { checkSession, logout } = useAuth();
 
   const menus = websiteMenus;
 
-  const filteredMenus = menus.filter(filterRole(roles));
+  const filteredMenus = menus.filter(filterRole(role));
 
   // Generating tree-structured data for menu content.
   const menuTree = arrayToTree(filteredMenus, 'id', 'menuParentId');

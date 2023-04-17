@@ -24,3 +24,8 @@ export enum ApiStatus {
   SUCCESS = 0,
   UNAUTHORIZED = 403,
 }
+
+export enum DYNAMIC_DATA_TYPE {
+  STRING = 1,
+  NUMBER = 2,
+}

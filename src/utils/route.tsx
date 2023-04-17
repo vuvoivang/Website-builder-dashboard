@@ -22,7 +22,7 @@ export interface IRoute extends IRouteBase {
   children?: IRoute[];
 }
 
-export function renderRoute(route: IRoute, role?: number[]) {
+export function renderRoute(route: IRoute, role?: string[]) {
   return (
     <Route
       key={route.path}
@@ -33,7 +33,7 @@ export function renderRoute(route: IRoute, role?: number[]) {
   );
 }
 
-export function renderRoutes(routes: IRoute[], role?: number[]) {
+export function renderRoutes(routes: IRoute[], role?: string[]) {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
