@@ -207,3 +207,7 @@ export const mappingDocumentsToCollections = (collections,documents ) => {
     };
   });
 }
+
+export const getNormalizeStringForSearch = (str)=> {
+  return str.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+}
