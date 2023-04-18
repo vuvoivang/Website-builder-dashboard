@@ -23,6 +23,68 @@
   max-height: 300px;
 }
 
+.dynamic-data-container{
+  div[role='tablist']{
+    .ant-tabs-tab{
+      // border-bottom: solid 1px #999;
+      // margin-top: 0 !important;
+      &.ant-tabs-tab-active{
+        background-color: #f1f4ff;
+      }
+    }
+    
+  }
+  div[role='tabpanel']{
+    &[aria-hidden="false"]{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      & > button{
+        width: fit-content;
+      }
+      span.ant-input-group-wrapper{
+        margin: 16px 0;
+      }
+    }
+    .document-list{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
+      .document{
+        border: solid 1px #d1e0f6;
+        border-radius: 8px;
+        padding: 8px;
+        padding-left: 24px;
+        width: 100%;
+        list-style-type: none;
+        .value{
+          color:#0968ed;
+        }
+        .semantic-key{
+          color: #f75f13;
+        }
+      }
+    }
+  }
+  .collection-autocomplete{
+    margin-top: 16px;
+    // margin-bottom: 4px;
+
+    .ant-input-wrapper{
+      width: calc(100% - 8px);
+
+    }
+    .ant-input-group-addon{
+      button{
+        pointer-events: none!important;
+      }
+    }
+  }
+  
+}
+
 .dynamic-data-container {
   .custom-tab-bar {
     display: flex;
@@ -75,4 +137,18 @@
 
 .prevent-pointer-events {
   pointer-events: none;
+}
+
+// global
+.ant-btn{
+  border-radius: 4px;
+}
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
+  color: #0968ed;
+}
+.ant-tabs-ink-bar {
+  position: absolute;
+  background: #0968ed;
+  pointer-events: none;
+  width: 3px !important;
 }

@@ -17,6 +17,7 @@ import { MAIN_ROUTES, websiteMenus } from '~/src/constant/menu';
 import useQuery from '~/src/hooks/useQuery';
 import { arrayToTree, queryAncestors } from '~/src/utils/menu';
 import { renderRoutes } from '~/src/utils/route';
+import ROUTE from '~/src/constant/routes';
 
 const { Header, Sider, Content } = Layout;
 
@@ -56,7 +57,7 @@ const generateMenus = (data) => {
 
 function LayoutApp() {
   const navigate = useNavigate();
-  const { role , name } = useSelector(authSelector);
+  const { role, name } = useSelector(authSelector);
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const query = useQuery();
   const { checkSession, logout } = useAuth();
@@ -80,9 +81,14 @@ function LayoutApp() {
 
   useEffect(() => {
     checkSession()
-      .then((data) => data)
+      .then((data) => {
+        if (currentPath === "" || currentPath === "/") {
+          navigate(ROUTE.DYNAMIC_DATA.OVERVIEW, { replace: true });
+        }
+        data
+      })
       .catch((err) => {
-        navigate('/admin/login', { replace: true });
+        navigate(ROUTE.LOGIN, { replace: true });
       });
   }, []);
 
