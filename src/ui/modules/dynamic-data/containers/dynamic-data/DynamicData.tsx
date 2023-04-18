@@ -58,6 +58,7 @@ function DynamicData() {
         <Button onClick={() => setOpenModalCreateCollection(true)}><PlusOutlined />Create Collection</Button>
         <AutoComplete
           popupClassName="certain-category-search-dropdown"
+          className='collection-autocomplete'
           dropdownMatchSelectWidth={500}
           style={{ width: 250 }}
           options={collectionOptions}

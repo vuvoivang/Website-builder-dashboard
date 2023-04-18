@@ -6,11 +6,14 @@ import { getNormalizeStringForSearch } from '~/src/utils';
 
 const { Option } = Select;
 
-const renderFieldsOfDocument = (document) => {
+const idKey = "id";
+
+const renderFieldsOfDocument = (document, specialKey) => {
+  const specialKeys = [idKey, specialKey];
   return Object.entries(document).map(([key, value]) => {
     return (
       <li key={key}>
-        {key}: {(value as any)}
+        {specialKeys.includes(key) ? <span className='semantic-key'> {key} </span> : key}:<span className='value'> {(value as any)} </span>
       </li>
     );
   });
@@ -19,7 +22,7 @@ const renderFieldsOfDocument = (document) => {
 
 const TabCollection = (props) => {
 
-  const { id, documents, dataKeys, setOpenModalCreateDocument } = props;
+  const { id, documents, dataKeys, setOpenModalCreateDocument, semanticKey } = props;
   const [filteredKey, setFilteredKey] = useState(dataKeys?.[0]);
   const [filteredData, setFilteredData] = useState('');
 
@@ -32,16 +35,18 @@ const TabCollection = (props) => {
     {dataKeys.map((option) => <Option value={option}>{option}</Option>)}
   </Select>);
   return <>
-    <Button onClick={() => setOpenModalCreateDocument(true)}><PlusOutlined />Create Document</Button>
+    <Button onClick={() => setOpenModalCreateDocument(true)}><PlusOutlined />Insert Document</Button>
     <Input addonBefore={selectKeysBefore} addonAfter={<SearchOutlined className="prevent-pointer-events" />} placeholder="Search by data's field" onChange={(e) => setFilteredData(e.target.value)} value={filteredData} />
-    {filteredDocuments.map((document) => {
-      const { id: documentId, data } = document;
-      return (
-        <ul key={`${id}-${documentId}`}>
-          {renderFieldsOfDocument({ documentId, ...data })}
-        </ul>
-      );
-    })}
+    <div className="document-list">
+      {filteredDocuments.map((document) => {
+        const { id: documentId, data } = document;
+        return (
+          <ul className="document" key={`${id}-${documentId}`}>
+            {renderFieldsOfDocument({ id: documentId, ...data }, semanticKey)}
+          </ul>
+        );
+      })}
+    </div>
   </>;
 
 };
