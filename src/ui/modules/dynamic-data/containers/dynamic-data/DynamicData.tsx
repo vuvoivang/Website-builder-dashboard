@@ -7,6 +7,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { AutoComplete, Input, Modal, Form } from 'antd';
 import FormAddCollection from '../../components/form-add-collection/FormAddCollection';
 import FormAddDocument from '../../components/form-add-document/FormAddDocument';
+import TabCollection from '../../components/tab-collection/TabCollection';
 
 const renderTitle = (title: string) => <span>{title}</span>;
 const renderFieldsOfDocument = (document) => {
@@ -19,26 +20,13 @@ const renderFieldsOfDocument = (document) => {
   });
 };
 
-const renderTabsCollectionsAndDocuments = (collections, setOpenModalCreateDocument, filteredKey = undefined, filteredData = undefined) => {
+
+const renderTabsCollectionsAndDocuments = (collections, setOpenModalCreateDocument) => {
   return collections.map((collection) => {
-    const { id, name, documents } = collection;
-    const filteredDocuments = (filteredKey && filteredData) ? documents.filter((doc) => {
-      return doc.data[filteredKey]?.includes(filteredData);
-    }) : documents;
     return {
-      label: name,
-      key: name,
-      children: <>
-        <Button onClick={() => setOpenModalCreateDocument(true)}><PlusOutlined />Create Document</Button>
-        {filteredDocuments.map((document) => {
-          const { id: documentId, data } = document;
-          return (
-            <ul key={`${id}-${documentId}`}>
-              {renderFieldsOfDocument({ documentId, ...data })}
-            </ul>
-          );
-        })}
-      </>,
+      label: collection.name,
+      key: collection.name,
+      children: <TabCollection {...collection} setOpenModalCreateDocument={setOpenModalCreateDocument} />
     };
   });
 };
@@ -94,8 +82,7 @@ function DynamicData() {
   };
 
   const listItemTabs = useMemo(() => renderTabsCollectionsAndDocuments(
-    mappingDocumentsToCollections(collections, documents), setOpenModalCreateDocument,
-    'pKey1', 'Key 1'
+    mappingDocumentsToCollections(collections, documents), setOpenModalCreateDocument
   ), [collections, documents]);
 
   const collectionOptions = collections.map((collection) => {
