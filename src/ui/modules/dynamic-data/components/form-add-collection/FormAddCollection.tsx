@@ -85,7 +85,7 @@ function FormAddCollection({ formCreateCollection, loading, onFinishCreateCollec
             )}
           </Form.List>
 
-          <Form.Item name="semanticKey" key='semanticKey' tooltip="Choose 1 of fields above" label="Semantic field:" rules={[{
+          {/* <Form.Item name="semanticKey" key='semanticKey' tooltip="Choose 1 of fields above" label="Semantic field:" rules={[{
             required: true, message: "Please choose semantic field"
           }, {
             validator: async (_, value) => {
@@ -95,7 +95,7 @@ function FormAddCollection({ formCreateCollection, loading, onFinishCreateCollec
             },
           },]}>
             <Input />
-          </Form.Item>
+          </Form.Item> */}
         </Form>
       )}
     </>

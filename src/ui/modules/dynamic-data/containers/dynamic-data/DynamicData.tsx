@@ -1,5 +1,5 @@
 import { Tabs, Button } from 'antd';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { MOCK_COLLECTIONS, MOCK_DOCUMENTS } from '~/src/mock/dynamic-data';
 import { mappingDocumentsToCollections } from '~/src/utils';
 import './DynamicData.less';
@@ -8,25 +8,17 @@ import { AutoComplete, Input, Modal, Form } from 'antd';
 import FormAddCollection from '../../components/form-add-collection/FormAddCollection';
 import FormAddDocument from '../../components/form-add-document/FormAddDocument';
 import TabCollection from '../../components/tab-collection/TabCollection';
+import dynamicDataService from '~/src/services/dynamic-data';
 
 const renderTitle = (title: string) => <span>{title}</span>;
-const renderFieldsOfDocument = (document) => {
-  return Object.entries(document).map(([key, value]) => {
-    return (
-      <li key={key}>
-        {key}: {(value as any)}
-      </li>
-    );
-  });
-};
 
 
 const renderTabsCollectionsAndDocuments = (collections, setOpenModalCreateDocument) => {
-  return collections.map((collection) => {
+  return collections.map((collection, idx) => {
     return {
       label: collection.name,
       key: collection.name,
-      children: <TabCollection {...collection} setOpenModalCreateDocument={setOpenModalCreateDocument} />
+      children: <TabCollection key={idx} {...collection} setOpenModalCreateDocument={setOpenModalCreateDocument} />
     };
   });
 };
@@ -111,15 +103,22 @@ function DynamicData() {
     setOpenModalCreateCollection(false);
   }
 
-  const handleCreateCollection = () => {
-
-  }
-
   const onFinishCreateCollection = async (values: any) => {
     console.log('Received values of collection form:', values);
-    // call api
     setConfirmLoading(true);
-    handleCreateCollection();
+    // call api
+    try {
+      dynamicDataService.addCollection(values).then((resp: any) => {
+        if (resp.id) {
+          alert('Create Collection Successfully'); setCollections(collections => [...collections, {
+            ...values,
+            id: resp.id,
+          }])
+        };
+      });
+    } catch (err) {
+      console.log('Err add collection', err);
+    }
     setConfirmLoading(false);
     setOpenModalCreateCollection(false);
   };
@@ -130,8 +129,6 @@ function DynamicData() {
   const handleCancelModalCreateDocument = () => {
     setOpenModalCreateDocument(false);
   }
-  const handleCreateDocument = () => {
-  }
   const onFinishCreateDocument = async (values: any) => {
     console.log('Received values of document form:', values);
     const data = {
@@ -140,10 +137,40 @@ function DynamicData() {
     }
     // call api
     setConfirmLoading(true);
-    handleCreateDocument();
+    try {
+      dynamicDataService.addDocument(data).then((resp: any) => {
+        if (resp.id) {
+          alert('Create Document Successfully');
+          setDocuments(documents => [...documents, {
+            ...data,
+            id: resp.id,
+          }])
+        };
+      });
+    } catch (err) {
+      console.log('Err add document', err);
+    }
     setConfirmLoading(false);
     setOpenModalCreateDocument(false);
   };
+
+  useEffect(() => {
+    setConfirmLoading(true);
+    // call api
+    try {
+      dynamicDataService.getDynamicData().then((resp: any) => {
+        // if(resp.collections){
+        //   setCollections(resp.collections);
+        // }
+        // if(resp.documents){
+        //   setCollections(resp.documents);
+        // }
+      });
+    } catch (err) {
+      console.log('Err get dynamic data', err);
+    }
+    setConfirmLoading(false);
+  }, [])
 
   return (
     <div className='dynamic-data-container'>

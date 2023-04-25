@@ -8,8 +8,8 @@ const { Option } = Select;
 
 const idKey = "id";
 
-const renderFieldsOfDocument = (document, specialKey) => {
-  const specialKeys = [idKey, specialKey];
+const renderFieldsOfDocument = (document) => {
+  const specialKeys = [idKey];
   return Object.entries(document).map(([key, value]) => {
     return (
       <li key={key}>
@@ -22,7 +22,7 @@ const renderFieldsOfDocument = (document, specialKey) => {
 
 const TabCollection = (props) => {
 
-  const { id, documents, dataKeys, setOpenModalCreateDocument, semanticKey } = props;
+  const { id, documents, dataKeys, setOpenModalCreateDocument } = props;
   const [filteredKey, setFilteredKey] = useState(dataKeys?.[0]);
   const [filteredData, setFilteredData] = useState('');
 
@@ -42,7 +42,7 @@ const TabCollection = (props) => {
         const { id: documentId, data } = document;
         return (
           <ul className="document" key={`${id}-${documentId}`}>
-            {renderFieldsOfDocument({ id: documentId, ...data }, semanticKey)}
+            {renderFieldsOfDocument({ id: documentId, ...data })}
           </ul>
         );
       })}
