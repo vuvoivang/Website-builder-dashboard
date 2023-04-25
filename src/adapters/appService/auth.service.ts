@@ -7,6 +7,7 @@ import { setUserInfo } from '~/src/adapters/redux/actions/auth';
 import { ResponseData } from '~/src/constant';
 import API from '~/src/constant/api';
 import { ILoginData, ILoginResponseData } from '~/src/domain/auth';
+import userService from '~/src/services/user';
 
 export function useAuth() {
   const dispatch = useDispatch();
@@ -88,6 +89,7 @@ export function useAuth() {
         data: null,
         success: true,
       };
+      userService.signOut();
 
       dispatch(
         setUserInfo({
@@ -95,7 +97,7 @@ export function useAuth() {
           role: '',
         })
       );
-      navigate('/admin/login');
+      window.location.href = '/login';
       return logoutData;
     },
   };

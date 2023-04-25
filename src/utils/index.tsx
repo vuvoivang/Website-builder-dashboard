@@ -191,7 +191,7 @@ export type ReverseMap<T> = T[keyof T];
 
 
 export const mappingDocumentsToCollections = (collections,documents ) => {
-  const mappingDocumentsByCollectionsIds = documents.reduce((acc, document) => {
+  const mappingDocumentsByCollectionsIds = documents?.reduce((acc, document) => {
     const { collectionId } = document;
     if (!acc[collectionId]) {
       acc[collectionId] = [];
@@ -199,15 +199,24 @@ export const mappingDocumentsToCollections = (collections,documents ) => {
     acc[collectionId].push(document);
     return acc;
   }, {});
-  return collections.map((collection) => {
+  return collections?.map((collection) => {
     const { id } = collection;
     return {
       ...collection,
-      documents: mappingDocumentsByCollectionsIds[id],
+      documents: mappingDocumentsByCollectionsIds?.[id],
     };
   });
 }
 
 export const getNormalizeStringForSearch = (str)=> {
   return str.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+}
+
+
+export const successMsg = (msg) => {
+  message.success(msg, 2000);
+}
+
+export const errorMsg = (msg) => {
+  message.error(msg, 2000);
 }

@@ -2,16 +2,16 @@ import { Input, Form } from 'antd';
 
 import Loading from '~/src/ui/shared/loading';
 
-function FormAddDocument({ formCreateDocument, loading, onFinishCreateDocument, keys }) {
+function FormEditDocument({ formEditDocument, loading, onFinishEditDocument, keys, defaultValues }) {
   return (
     <>
       {loading ? (
         <Loading />
       ) : (
-        <Form form={formCreateDocument} name="form_item_document" onFinish={onFinishCreateDocument} labelCol={{ span: 8 }}
+        <Form initialValues={defaultValues} form={formEditDocument} name="form_item_document" onFinish={onFinishEditDocument} labelCol={{ span: 8 }}
           wrapperCol={{ span: 14 }} validateTrigger={['onChange', 'onBlur']} autoComplete="off">
           {
-            keys.length > 0 && keys.map((item) => <Form.Item name={item} key={item} label={item} rules={[{
+            keys.length > 1 && keys.map((item) => <Form.Item name={item} key={item} label={item} rules={[{
               required: true, message: "Please fill this field"
             },
             ]}>
@@ -24,4 +24,4 @@ function FormAddDocument({ formCreateDocument, loading, onFinishCreateDocument, 
   );
 }
 
-export default FormAddDocument;
+export default FormEditDocument;

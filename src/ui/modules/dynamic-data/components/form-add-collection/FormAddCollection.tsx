@@ -16,7 +16,7 @@ function FormAddCollection({ formCreateCollection, loading, onFinishCreateCollec
             required: true, message: "Please fill collection's name"
           }, {
             validator: async (_, value) => {
-              if (value && collections.findIndex(item => item.name === value) !== -1) {
+              if (value && collections && collections?.findIndex(item => item.name === value) !== -1) {
                 return Promise.reject(new Error("Collection's name has been existed before"));
               }
             },
