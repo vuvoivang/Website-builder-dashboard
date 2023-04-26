@@ -52,13 +52,22 @@
       align-items: flex-start;
       justify-content: center;
       width: 100%;
+      .document-container{
+        width: 100%;
+      }
       .document{
+        display: flex;
+        justify-content: space-between;
         border: solid 1px #d1e0f6;
         border-radius: 8px;
         padding: 8px;
         padding-left: 24px;
+        padding-top: 16px;
         width: 100%;
-        list-style-type: none;
+        ul{
+          list-style-type: none;
+          padding-left: 0;
+        }
         .value{
           color:#0968ed;
         }
@@ -151,4 +160,10 @@
   background: #0968ed;
   pointer-events: none;
   width: 3px !important;
+}
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  color: #ebebf5;
+  font-weight: 600;
+  background-color: #0853f5;
 }

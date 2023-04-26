@@ -1,32 +1,27 @@
-import { Tabs, Button } from 'antd';
-import { useMemo, useRef, useState } from 'react';
+import { Tabs, Button, message } from 'antd';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { MOCK_COLLECTIONS, MOCK_DOCUMENTS } from '~/src/mock/dynamic-data';
-import { mappingDocumentsToCollections } from '~/src/utils';
+import { errorMsg, mappingDocumentsToCollections, successMsg } from '~/src/utils';
 import './DynamicData.less';
 import { PlusOutlined } from '@ant-design/icons';
 import { AutoComplete, Input, Modal, Form } from 'antd';
 import FormAddCollection from '../../components/form-add-collection/FormAddCollection';
 import FormAddDocument from '../../components/form-add-document/FormAddDocument';
 import TabCollection from '../../components/tab-collection/TabCollection';
+import dynamicDataService from '~/src/services/dynamic-data';
+import FormEditDocument from '../../components/form-edit-document/FormEditDocument';
+import { DYNAMIC_DATA_TYPE } from '~/src/constant';
 
 const renderTitle = (title: string) => <span>{title}</span>;
-const renderFieldsOfDocument = (document) => {
-  return Object.entries(document).map(([key, value]) => {
-    return (
-      <li key={key}>
-        {key}: {(value as any)}
-      </li>
-    );
-  });
-};
 
 
-const renderTabsCollectionsAndDocuments = (collections, setOpenModalCreateDocument) => {
-  return collections.map((collection) => {
+const renderTabsCollectionsAndDocuments = (collections, setOpenModalCreateDocument, setOpenModalDeleteCollection, handleDeleteDocument, handleEditDocument) => {
+  return collections?.map((collection, idx) => {
     return {
       label: collection.name,
       key: collection.name,
-      children: <TabCollection {...collection} setOpenModalCreateDocument={setOpenModalCreateDocument} />
+      children: <TabCollection key={idx} {...collection} setOpenModalCreateDocument={setOpenModalCreateDocument}
+        setOpenModalDeleteCollection={setOpenModalDeleteCollection} handleDeleteDocument={handleDeleteDocument} handleEditDocument={handleEditDocument} />
     };
   });
 };
@@ -34,23 +29,28 @@ const renderTabsCollectionsAndDocuments = (collections, setOpenModalCreateDocume
 function DynamicData() {
   const [openModalCreateCollection, setOpenModalCreateCollection] = useState(false);
   const [openModalCreateDocument, setOpenModalCreateDocument] = useState(false);
+  const [openModalEditDocument, setOpenModalEditDocument] = useState(false);
+  const [openModalDeleteCollection, setOpenModalDeleteCollection] = useState(false);
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const [activeCollectionName, setActiveCollectionName] = useState(
-    MOCK_COLLECTIONS[0].name
-  );
+
   const [valueSearchCollection, setValueSearchCollection] = useState('');
 
-  const [collections, setCollections] = useState(MOCK_COLLECTIONS);
-  const [documents, setDocuments] = useState(MOCK_DOCUMENTS);
+  const [collections, setCollections] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [activeCollectionName, setActiveCollectionName] = useState<string>();
+
+  const [editingDocument, setEditingDocument] = useState();
 
   const refSearchCollection = useRef();
 
   const formCreateCollection = Form.useForm()[0];
   const formCreateDocument = Form.useForm()[0];
+  const formEditDocument = Form.useForm()[0];
 
-  const currentCollection = collections.find((collection) => collection.name === activeCollectionName);
+
+  const currentCollection = collections?.find((collection) => collection.name === activeCollectionName);
 
   const renderTabBar = (props, DefaultTabBar) => {
     return (
@@ -81,12 +81,34 @@ function DynamicData() {
       </div>
     );
   };
+  const handleDeleteDocument = (documentId) => {
+    try {
+      dynamicDataService.deleteDocument(documentId).then((resp: any) => {
+        if (!resp.msg) {
+          successMsg('Delete Document Successfully!'); setDocuments(documents => documents.filter(doc => doc.id !== documentId));
+        };
+      });
+    } catch (err) {
+      console.log('Err delete document', err);
+    }
+  }
+
+  const handleEditDocument = (document) => {
+    try {
+      setEditingDocument(document);
+      setOpenModalEditDocument(true);
+    } catch (err) {
+      console.log('Err edit collection', err);
+    }
+  }
 
   const listItemTabs = useMemo(() => renderTabsCollectionsAndDocuments(
-    mappingDocumentsToCollections(collections, documents), setOpenModalCreateDocument
+    mappingDocumentsToCollections(collections, documents), setOpenModalCreateDocument, setOpenModalDeleteCollection,
+    handleDeleteDocument,
+    handleEditDocument,
   ), [collections, documents]);
 
-  const collectionOptions = collections.map((collection) => {
+  const collectionOptions = collections?.map((collection) => {
     return {
       label: renderTitle(collection.name),
       value: collection.name,
@@ -99,10 +121,9 @@ function DynamicData() {
     if (refSearchCollection?.current) (refSearchCollection.current as any)?.blur();
   };
 
-  const handleOnTabClick = function (key: string, event) {
+  const handleOnTabClick = function (key: string) {
     setActiveCollectionName(key);
   };
-
 
   const handleOkModalCreateCollection = () => {
     formCreateCollection.submit();
@@ -111,15 +132,29 @@ function DynamicData() {
     setOpenModalCreateCollection(false);
   }
 
-  const handleCreateCollection = () => {
-
-  }
-
   const onFinishCreateCollection = async (values: any) => {
-    console.log('Received values of collection form:', values);
-    // call api
     setConfirmLoading(true);
-    handleCreateCollection();
+    const data = {
+      name: values.name,
+      dataKeys: values.fields,
+      dataTypes: values.fields.map((_) => (DYNAMIC_DATA_TYPE.STRING)),
+    }
+    // call api
+    try {
+      dynamicDataService.addCollection(data).then((resp: any) => {
+        if (resp.id) {
+          successMsg('Create Collection Successfully!');
+          setCollections(collections => [...collections, {
+            ...data,
+            id: resp.id,
+          }])
+          setActiveCollectionName(data.name);
+        } else errorMsg('Create Collection Failed!');
+      });
+    } catch (err) {
+      console.log('Err add collection', err);
+      errorMsg('Create Collection Failed!');
+    }
     setConfirmLoading(false);
     setOpenModalCreateCollection(false);
   };
@@ -130,20 +165,108 @@ function DynamicData() {
   const handleCancelModalCreateDocument = () => {
     setOpenModalCreateDocument(false);
   }
-  const handleCreateDocument = () => {
-  }
   const onFinishCreateDocument = async (values: any) => {
-    console.log('Received values of document form:', values);
     const data = {
-      ...values,
+      data: { ...values },
       collectionId: currentCollection.id,
     }
     // call api
     setConfirmLoading(true);
-    handleCreateDocument();
+    try {
+      dynamicDataService.addDocument(data).then((resp: any) => {
+        if (resp.id) {
+          successMsg('Create Document Successfully!');
+          setDocuments(documents => [...documents, {
+            ...data,
+            id: resp.id,
+          }])
+        } else errorMsg('Create Document Failed!');
+      });
+    } catch (err) {
+      console.log('Err add document', err); errorMsg('Create Document Failed!');
+    }
     setConfirmLoading(false);
     setOpenModalCreateDocument(false);
   };
+
+
+  const handleOkModalEditDocument = () => {
+    formEditDocument.submit();
+  }
+  const handleCancelModalEditDocument = () => {
+    setOpenModalEditDocument(false);
+    setEditingDocument(null);
+  }
+  console.log(currentCollection)
+  const onFinishEditDocument = async (values: any) => {
+    const data = {
+      id: (editingDocument as any)?.id,
+      data: { ...values },
+      collectionId: currentCollection.id,
+    }
+    // call api
+    setConfirmLoading(true);
+    try {
+      dynamicDataService.updateDocument(data).then((resp: any) => {
+        if (!resp.msg) {
+          successMsg('Update Document Successfully!');
+          const newDocuments = [...documents];
+          newDocuments.splice(newDocuments.findIndex(doc => doc.id === data.id), 1, data);
+          setDocuments(newDocuments);
+        } else errorMsg('Update Document Failed!');
+      });
+    } catch (err) {
+      console.log('Err add document', err);
+      errorMsg('Update Document Failed!');
+    } finally {
+      setEditingDocument(null);
+      setOpenModalEditDocument(false);
+    }
+    setConfirmLoading(false);
+    setOpenModalCreateDocument(false);
+  };
+
+  const handleOkDeleteCollection = () => {
+    setConfirmLoading(true);
+    try {
+      dynamicDataService.deleteCollection(currentCollection.id).then((resp: any) => {
+        if (!resp.msg) {
+          successMsg('Delete Collection Successfully!');
+          setCollections(collections => collections.filter(col => col.id !== currentCollection.id));
+        } else errorMsg('Delete Document Failed!');
+      });
+    } catch (err) {
+      console.log('Err delete document', err); errorMsg('Delete Document Failed!');
+    }
+    setConfirmLoading(false);
+    setOpenModalDeleteCollection(false);
+    setActiveCollectionName(collections?.[0]?.name);
+
+  };
+
+  const handleCancelDeleteCollection = () => {
+    setOpenModalDeleteCollection(false);
+  };
+
+  useEffect(() => {
+    setConfirmLoading(true);
+    // dynamicDataService.deleteCollection('7');
+    // call api
+    try {
+      dynamicDataService.getDynamicData().then((resp: any) => {
+        if (resp.collections) {
+          setCollections(resp.collections);
+          setActiveCollectionName(resp.collections?.[0]?.name);
+        }
+        if (resp.documents) {
+          setDocuments(resp.documents);
+        }
+      });
+    } catch (err) {
+      console.log('Err get dynamic data', err);
+    }
+    setConfirmLoading(false);
+  }, [])
 
   return (
     <div className='dynamic-data-container'>
@@ -179,7 +302,33 @@ function DynamicData() {
         width={800}
       >
         <h4>Fill all fields' values to create a new document of this collection</h4>
-        <FormAddDocument keys={currentCollection.dataKeys} formCreateDocument={formCreateDocument} loading={confirmLoading} onFinishCreateDocument={onFinishCreateDocument} />
+        <FormAddDocument keys={currentCollection?.dataKeys} formCreateDocument={formCreateDocument} loading={confirmLoading} onFinishCreateDocument={onFinishCreateDocument} />
+      </Modal>
+
+      <Modal
+        title="Update document"
+        open={openModalEditDocument}
+        onOk={handleOkModalEditDocument}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancelModalEditDocument}
+        cancelText="Cancel"
+        okText="Update"
+        width={800}
+      >
+        <h4>Fill all fields' values to update this document</h4>
+        <FormEditDocument keys={currentCollection?.dataKeys} formEditDocument={formEditDocument} loading={confirmLoading} onFinishEditDocument={onFinishEditDocument} defaultValues={editingDocument && (editingDocument as any)?.data} />
+      </Modal>
+
+      <Modal
+        title="Delete this collection permanently?"
+        open={openModalDeleteCollection}
+        onOk={handleOkDeleteCollection}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancelDeleteCollection}
+        cancelText="Cancel"
+        okText="Delete"
+      >
+        <p>This is a destructive operation. Are you sure to delete this collection and all its documents?</p>
       </Modal>
     </div>
   );
