@@ -1,10 +1,10 @@
 const ROUTE = {
   DYNAMIC_DATA: {
-    OVERVIEW: "/dynamic-data",
-    COLLECTION: "/dynamic-data/collection",
-    DOCUMENT: "/dynamic-data/document",
+    OVERVIEW: "admin/dynamic-data",
+    COLLECTION: "admin/dynamic-data/collection",
+    DOCUMENT: "admin/dynamic-data/document",
   },
-  LOGIN: "/login",
+  LOGIN: "admin/login",
 };
 
 export default ROUTE;

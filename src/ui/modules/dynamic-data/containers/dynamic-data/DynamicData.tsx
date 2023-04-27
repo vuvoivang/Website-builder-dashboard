@@ -197,7 +197,6 @@ function DynamicData() {
     setOpenModalEditDocument(false);
     setEditingDocument(null);
   }
-  console.log(currentCollection)
   const onFinishEditDocument = async (values: any) => {
     const data = {
       id: (editingDocument as any)?.id,

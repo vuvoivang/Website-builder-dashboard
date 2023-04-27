@@ -82,7 +82,7 @@ function LayoutApp() {
   useEffect(() => {
     checkSession()
       .then((data) => {
-        if (currentPath === "" || currentPath === "/") {
+        if (currentPath === "" || currentPath === "/admin") {
           navigate(ROUTE.DYNAMIC_DATA.OVERVIEW, { replace: true });
         }
         data

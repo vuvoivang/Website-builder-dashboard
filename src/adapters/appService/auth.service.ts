@@ -97,7 +97,7 @@ export function useAuth() {
           role: '',
         })
       );
-      window.location.href = '/login';
+      window.location.href = '/sign-in';
       return logoutData;
     },
   };
