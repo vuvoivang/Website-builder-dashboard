@@ -1,4 +1,3 @@
-const API_BASE_URL = import.meta.env.VITE_API_HOST || 'http://34.117.219.34/';
 /**
  * Performs a fetch request with the given method and data, use key 'buildify-token' in localStorage
  * @param {string} url - The url to fetch
@@ -9,22 +8,20 @@ const API_BASE_URL = import.meta.env.VITE_API_HOST || 'http://34.117.219.34/';
  */
 
 export const fetchWithBuildifyToken = (
-  path: string,
+  url: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   data?: any,
   extendHeaders?: any
 ) => {
-  const url = path.includes('http') ? path : API_BASE_URL + path;
   const token = localStorage.getItem('buildify-token') || '';
   if (method === 'GET' || method === 'DELETE') {
-    const fetchUrl = data
-      ? `${url}?${new URLSearchParams(data).toString()}`
-      : url;
+    const fetchUrl = data ? url + '?' + new URLSearchParams(data).toString() : url;
     return fetch(fetchUrl, {
       method,
       headers: {
         ...extendHeaders,
         Authorization: token,
+        'Referrer-Policy': 'unsafe-url',
       },
     })
       .then((response) => {
@@ -37,31 +34,33 @@ export const fetchWithBuildifyToken = (
       .catch((error) => {
         // handle error
       });
-  }
-  const headers = {
-    'Content-Type': 'application/json',
-    ...extendHeaders,
-    Authorization: token,
-  };
-  let body = data;
-  if (headers['Content-Type'] === 'multipart/form-data') {
-    delete headers['Content-Type'];
   } else {
-    body = JSON.stringify(data);
-  }
-  return fetch(url, {
-    method,
-    headers,
-    body,
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-
-      return response.json();
+    const headers = {
+      'Content-Type': 'application/json',
+      ...extendHeaders,
+      Authorization: token,
+      'Referrer-Policy': 'unsafe-url',
+    };
+    let body = data;
+    if (headers['Content-Type'] === 'multipart/form-data') {
+      delete headers['Content-Type'];
+    } else {
+      body = JSON.stringify(data);
+    }
+    return fetch(url, {
+      method,
+      headers,
+      body,
     })
-    .catch((error) => {
-      // handle error
-    });
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+
+        return response.json();
+      })
+      .catch((error) => {
+        // handle error
+      });
+  }
 };
