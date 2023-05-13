@@ -1,4 +1,4 @@
-import { Tabs, Button, message } from 'antd';
+import { Tabs, Button, message, Select, Empty } from 'antd';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MOCK_COLLECTIONS, MOCK_DOCUMENTS } from '~/src/mock/dynamic-data';
 import { errorMsg, mappingDocumentsToCollections, successMsg } from '~/src/utils';
@@ -58,11 +58,12 @@ function DynamicData() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const projectIdFromQueryParam = searchParams.get('project_id') || "";
-  const [currentProjectId, setCurrentProjectId] = useState();
+  const [currentProjectId, setCurrentProjectId] = useState<string>();
 
   const renderTabBar = (props, DefaultTabBar) => {
     return (
       <div className='custom-tab-bar'>
+
         <Button onClick={() => setOpenModalCreateCollection(true)}><PlusOutlined />Create Collection</Button>
         <AutoComplete
           popupClassName="certain-category-search-dropdown"
@@ -261,7 +262,7 @@ function DynamicData() {
     // dynamicDataService.deleteCollection('7');
     // call api
     try {
-      if(!currentProjectId) return;
+      if (!currentProjectId) return;
       dynamicDataService.getDynamicData(currentProjectId).then((resp: any) => {
         if (resp.collections) {
           setCollections(resp.collections);
@@ -286,7 +287,7 @@ function DynamicData() {
       userService.getListProject().then((resp: any) => {
         if (resp.projects) {
           setProjects(resp.projects);
-          if(!projectIdFromQueryParam) setSearchParams({
+          if (!projectIdFromQueryParam) setSearchParams({
             project_id: resp.projects[0]?.id
           });
         }
@@ -301,8 +302,31 @@ function DynamicData() {
     setCurrentProjectId(projectIdFromQueryParam || projects[0]?.id);
   }, [projectIdFromQueryParam])
 
+  const onChangeSelectProject = (value: string) => {
+    setCurrentProjectId(value);
+  };
+
+  // const currentProject = projects.find(project => project.id === currentProjectId);
+  const getOptionsProjects = projects.map(project => ({
+    value: project?.id,
+    label: project?.name,
+  }))
   return (
     <div className='dynamic-data-container'>
+      <div className='select-project-container'>
+        <Select
+          showSearch
+          placeholder="Select current project"
+          optionFilterProp="children"
+          onChange={onChangeSelectProject}
+          filterOption={(input, option) =>
+            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+          }
+          value={currentProjectId}
+          notFoundContent={<div>No results</div>}
+          options={getOptionsProjects}
+        />
+      </div>
       <Tabs
         activeKey={activeCollectionName}
         renderTabBar={renderTabBar}
