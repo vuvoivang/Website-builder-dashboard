@@ -11,6 +11,8 @@ import TabCollection from '../../components/tab-collection/TabCollection';
 import dynamicDataService from '~/src/services/dynamic-data';
 import FormEditDocument from '../../components/form-edit-document/FormEditDocument';
 import { DYNAMIC_DATA_TYPE } from '~/src/constant';
+import { useSearchParams } from 'react-router-dom';
+import userService from '~/src/services/user';
 
 const renderTitle = (title: string) => <span>{title}</span>;
 
@@ -40,6 +42,8 @@ function DynamicData() {
   const [collections, setCollections] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [activeCollectionName, setActiveCollectionName] = useState<string>();
+  const [projects, setProjects] = useState([]);
+
 
   const [editingDocument, setEditingDocument] = useState();
 
@@ -51,6 +55,10 @@ function DynamicData() {
 
 
   const currentCollection = collections?.find((collection) => collection.name === activeCollectionName);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const projectIdFromQueryParam = searchParams.get('project_id') || "";
+  const [currentProjectId, setCurrentProjectId] = useState();
 
   const renderTabBar = (props, DefaultTabBar) => {
     return (
@@ -138,6 +146,7 @@ function DynamicData() {
       name: values.name,
       dataKeys: values.fields,
       dataTypes: values.fields.map((_) => (DYNAMIC_DATA_TYPE.STRING)),
+      projectId: currentProjectId,
     }
     // call api
     try {
@@ -252,7 +261,8 @@ function DynamicData() {
     // dynamicDataService.deleteCollection('7');
     // call api
     try {
-      dynamicDataService.getDynamicData().then((resp: any) => {
+      if(!currentProjectId) return;
+      dynamicDataService.getDynamicData(currentProjectId).then((resp: any) => {
         if (resp.collections) {
           setCollections(resp.collections);
           setActiveCollectionName(resp.collections?.[0]?.name);
@@ -265,7 +275,31 @@ function DynamicData() {
       console.log('Err get dynamic data', err);
     }
     setConfirmLoading(false);
-  }, [])
+  }, [currentProjectId]);
+
+
+  useEffect(() => {
+    setConfirmLoading(true);
+    // dynamicDataService.deleteCollection('7');
+    // call api
+    try {
+      userService.getListProject().then((resp: any) => {
+        if (resp.projects) {
+          setProjects(resp.projects);
+          if(!projectIdFromQueryParam) setSearchParams({
+            project_id: resp.projects[0]?.id
+          });
+        }
+      });
+    } catch (err) {
+      console.log('Err get list project', err);
+    }
+    setConfirmLoading(false);
+  }, []);
+
+  useEffect(() => {
+    setCurrentProjectId(projectIdFromQueryParam || projects[0]?.id);
+  }, [projectIdFromQueryParam])
 
   return (
     <div className='dynamic-data-container'>

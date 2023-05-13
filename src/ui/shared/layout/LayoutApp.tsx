@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 import {
   MenuFoldOutlined,
@@ -18,6 +18,7 @@ import useQuery from '~/src/hooks/useQuery';
 import { arrayToTree, queryAncestors } from '~/src/utils/menu';
 import { renderRoutes } from '~/src/utils/route';
 import ROUTE from '~/src/constant/routes';
+import userService from '~/src/services/user';
 
 const { Header, Sider, Content } = Layout;
 
@@ -55,10 +56,15 @@ const generateMenus = (data) => {
   });
 };
 
+export const AppContext = createContext(null);
+
+
 function LayoutApp() {
   const navigate = useNavigate();
   const { role, name } = useSelector(authSelector);
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [user, setUser] = useState<any>(false);
+
   const query = useQuery();
   const { checkSession, logout } = useAuth();
 
@@ -80,20 +86,20 @@ function LayoutApp() {
     : [];
 
   useEffect(() => {
-    checkSession()
+    userService.getUserInfo()
       .then((data) => {
+        if(!data.msg) throw {};
+        setUser(data);
         if (currentPath === "" || currentPath === "/admin") {
           navigate(ROUTE.DYNAMIC_DATA.OVERVIEW, { replace: true });
         }
-        data
       })
       .catch((err) => {
-        navigate(ROUTE.LOGIN, { replace: true });
+        window.location.href = "/sign-in";
       });
   }, []);
 
   const currentPath = useLocation().pathname;
-  const userInfo = useSelector(authSelector);
   return (
     <Layout className="cms-layout-app">
       <Sider
@@ -112,41 +118,48 @@ function LayoutApp() {
         </Menu>
       </Sider>
       <Layout className="site-layout">
-        <Header
-          className="site-layout-background-header"
-          style={{ padding: 0 }}
-        >
-          <div className="site-layout-background-header_left">
-            {React.createElement(
-              collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-              {
-                className: 'trigger',
-                onClick: () => setCollapsed(!collapsed),
-              }
-            )}
-            <h1>
-              {MAIN_ROUTES.find((item) => item.path === currentPath)?.title}
-            </h1>
-          </div>
+        <AppContext.Provider value={{
+          userInfo: user
+        }}>
 
-          <div className="action-container">
-            <h3 className="action-container_greeting">Hi {userInfo.name}!</h3>
-            <Button className="btn-logout" size="middle" onClick={logout}>
-              Logout
-            </Button>
-          </div>
-        </Header>
-        <Content
-          className="site-layout-background"
-          style={{
-            margin: '24px 16px',
-            padding: 24,
-            minHeight: 280,
-          }}
-        >
-          {renderRoutes(MAIN_ROUTES)}
-        </Content>
+          <Header
+            className="site-layout-background-header"
+            style={{ padding: 0 }}
+          >
+            <div className="site-layout-background-header_left">
+              {React.createElement(
+                collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+                {
+                  className: 'trigger',
+                  onClick: () => setCollapsed(!collapsed),
+                }
+              )}
+              <h1>
+                {MAIN_ROUTES.find((item) => item.path === currentPath)?.title}
+              </h1>
+            </div>
+
+            <div className="action-container">
+              <h3 className="action-container_greeting">Hi {user?.name}!</h3>
+              <Button className="btn-logout" size="middle" onClick={logout}>
+                Logout
+              </Button>
+            </div>
+          </Header>
+          <Content
+            className="site-layout-background"
+            style={{
+              margin: '24px 16px',
+              padding: 24,
+              minHeight: 280,
+            }}
+          >
+            {renderRoutes(MAIN_ROUTES)}
+          </Content>
+        </AppContext.Provider >
+
       </Layout>
+
     </Layout>
   );
 }

@@ -6,6 +6,7 @@ export type Collection = {
   name: string;
   dataKeys: [string];
   dataTypes: [number];
+  projectId: string;
 };
 
 export type Document = {
@@ -22,8 +23,12 @@ const getCollection = (id: string) => {
   });
 };
 
-const getDynamicData = () => {
-  return fetchWithBuildifyToken(generateUrlByService(SERVICE_NAME, 'collection/list'), 'GET');
+const getDynamicData = (projectId: string) => {
+  return fetchWithBuildifyToken(generateUrlByService(SERVICE_NAME, 'collection/list'), 'GET', { projectId });
+};
+
+const getCollectionMap = (projectId: string) => {
+  return fetchWithBuildifyToken(generateUrlByService(SERVICE_NAME, 'collection/map'), 'GET', { projectId });
 };
 
 const addCollection = (collection: Omit<Collection, 'id'>) => {
@@ -64,6 +69,7 @@ const deleteDocument = (id: string) => {
 
 const dynamicDataService = {
   getCollection,
+  getCollectionMap,
   getDynamicData,
   addCollection,
   updateCollection,
