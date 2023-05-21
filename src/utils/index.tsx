@@ -214,9 +214,9 @@ export const getNormalizeStringForSearch = (str)=> {
 
 
 export const successMsg = (msg) => {
-  message.success(msg, 2000);
+  message.success(msg);
 }
 
 export const errorMsg = (msg) => {
-  message.error(msg, 2000);
+  message.error(msg);
 }

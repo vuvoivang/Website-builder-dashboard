@@ -96,7 +96,7 @@ function DynamicData() {
     try {
       dynamicDataService.deleteDocument(documentId).then((resp: any) => {
         if (!resp.msg) {
-          successMsg('Delete Document Successfully!'); setDocuments(documents => documents.filter(doc => doc.id !== documentId));
+          successMsg('Delete Document Successfully'); setDocuments(documents => documents.filter(doc => doc.id !== documentId));
         };
       });
     } catch (err) {
@@ -155,17 +155,17 @@ function DynamicData() {
     try {
       dynamicDataService.addCollection(data).then((resp: any) => {
         if (resp.id) {
-          successMsg('Create Collection Successfully!');
+          successMsg('Create Collection Successfully');
           setCollections(collections => [...collections, {
             ...data,
             id: resp.id,
           }])
           setActiveCollectionName(data.name);
-        } else errorMsg('Create Collection Failed!');
+        } else errorMsg('Create Collection Failed');
       });
     } catch (err) {
       console.log('Err add collection', err);
-      errorMsg('Create Collection Failed!');
+      errorMsg('Create Collection Failed');
     }
     setConfirmLoading(false);
     setOpenModalCreateCollection(false);
@@ -187,15 +187,15 @@ function DynamicData() {
     try {
       dynamicDataService.addDocument(data).then((resp: any) => {
         if (resp.id) {
-          successMsg('Create Document Successfully!');
+          successMsg('Create Document Successfully');
           setDocuments(documents => [...documents, {
             ...data,
             id: resp.id,
           }])
-        } else errorMsg('Create Document Failed!');
+        } else errorMsg('Create Document Failed');
       });
     } catch (err) {
-      console.log('Err add document', err); errorMsg('Create Document Failed!');
+      console.log('Err add document', err); errorMsg('Create Document Failed');
     }
     setConfirmLoading(false);
     setOpenModalCreateDocument(false);
@@ -220,15 +220,15 @@ function DynamicData() {
     try {
       dynamicDataService.updateDocument(data).then((resp: any) => {
         if (!resp.msg) {
-          successMsg('Update Document Successfully!');
+          successMsg('Update Document Successfully');
           const newDocuments = [...documents];
           newDocuments.splice(newDocuments.findIndex(doc => doc.id === data.id), 1, data);
           setDocuments(newDocuments);
-        } else errorMsg('Update Document Failed!');
+        } else errorMsg('Update Document Failed');
       });
     } catch (err) {
       console.log('Err add document', err);
-      errorMsg('Update Document Failed!');
+      errorMsg('Update Document Failed');
     } finally {
       setEditingDocument(null);
       setOpenModalEditDocument(false);
@@ -242,12 +242,12 @@ function DynamicData() {
     try {
       dynamicDataService.deleteCollection(currentCollection.id).then((resp: any) => {
         if (!resp.msg) {
-          successMsg('Delete Collection Successfully!');
+          successMsg('Delete Collection Successfully');
           setCollections(collections => collections.filter(col => col.id !== currentCollection.id));
-        } else errorMsg('Delete Document Failed!');
+        } else errorMsg('Delete Document Failed');
       });
     } catch (err) {
-      console.log('Err delete document', err); errorMsg('Delete Document Failed!');
+      console.log('Err delete document', err); errorMsg('Delete Document Failed');
     }
     setConfirmLoading(false);
     setOpenModalDeleteCollection(false);
