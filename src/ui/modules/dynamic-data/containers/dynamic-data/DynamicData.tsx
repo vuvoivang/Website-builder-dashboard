@@ -314,6 +314,7 @@ function DynamicData() {
   return (
     <div className='dynamic-data-container'>
       <div className='select-project-container'>
+        <h4>Project: </h4>
         <Select
           showSearch
           placeholder="Select current project"

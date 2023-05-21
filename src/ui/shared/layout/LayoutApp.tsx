@@ -1,9 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { createContext, useEffect, useState } from 'react';
 
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-} from '@ant-design/icons';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Layout, Menu, Button } from 'antd';
 import { pathToRegexp } from 'path-to-regexp';
 import { useSelector } from 'react-redux';
@@ -23,9 +21,7 @@ import userService from '~/src/services/user';
 const { Header, Sider, Content } = Layout;
 
 const filterRole = (role) => (menu) => {
-  return menu.role
-    ? menu.role.includes(role)
-    : true;
+  return menu.role ? menu.role.includes(role) : true;
 };
 
 const generateMenus = (data) => {
@@ -58,7 +54,6 @@ const generateMenus = (data) => {
 
 export const AppContext = createContext(null);
 
-
 function LayoutApp() {
   const navigate = useNavigate();
   const { role, name } = useSelector(authSelector);
@@ -69,6 +64,7 @@ function LayoutApp() {
   const { checkSession, logout } = useAuth();
 
   const menus = websiteMenus;
+  const currentPath = useLocation().pathname;
 
   const filteredMenus = menus.filter(filterRole(role));
 
@@ -77,7 +73,7 @@ function LayoutApp() {
 
   // Find a menu that matches the pathname.
   const currentMenu = menus.find(
-    (_) => _.route && pathToRegexp(_.route).exec(location.pathname)
+    (_) => _.route && pathToRegexp(_.route).exec(currentPath)
   );
 
   // Find the key that should be selected according to the current menu.
@@ -86,20 +82,20 @@ function LayoutApp() {
     : [];
 
   useEffect(() => {
-    userService.getUserInfo()
+    userService
+      .getUserInfo()
       .then((data) => {
-        if(!data.msg) throw {};
+        if (data.msg) throw {};
         setUser(data);
-        if (currentPath === "" || currentPath === "/admin") {
+        if (currentPath === '/' || currentPath === '/admin') {
           navigate(ROUTE.DYNAMIC_DATA.OVERVIEW, { replace: true });
         }
       })
       .catch((err) => {
-        window.location.href = "/sign-in";
+        if (import.meta.env.PROD) window.location.href = '/sign-in';
       });
-  }, []);
+  }, [currentPath]);
 
-  const currentPath = useLocation().pathname;
   return (
     <Layout className="cms-layout-app">
       <Sider
@@ -118,10 +114,11 @@ function LayoutApp() {
         </Menu>
       </Sider>
       <Layout className="site-layout">
-        <AppContext.Provider value={{
-          userInfo: user
-        }}>
-
+        <AppContext.Provider
+          value={{
+            userInfo: user,
+          }}
+        >
           <Header
             className="site-layout-background-header"
             style={{ padding: 0 }}
@@ -156,10 +153,8 @@ function LayoutApp() {
           >
             {renderRoutes(MAIN_ROUTES)}
           </Content>
-        </AppContext.Provider >
-
+        </AppContext.Provider>
       </Layout>
-
     </Layout>
   );
 }
