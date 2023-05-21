@@ -317,87 +317,90 @@ function DynamicData() {
     label: project?.name,
   }))
   return (
-    <div className='dynamic-data-container'>
-      <div className='select-project-container'>
-        <h4>Project: </h4>
-        <Select
-          showSearch
-          placeholder="Select current project"
-          optionFilterProp="children"
-          onChange={onChangeSelectProject}
-          filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-          }
-          value={currentProjectId}
-          notFoundContent={<div>No results</div>}
-          options={getOptionsProjects}
-          className="project-select"
+    <>
+      <div className='dynamic-data-container'>
+        <div className='select-project-container'>
+          <h4>Project: </h4>
+          <Select
+            showSearch
+            placeholder="Select current project"
+            optionFilterProp="children"
+            onChange={onChangeSelectProject}
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+            value={currentProjectId}
+            notFoundContent={<div>No results</div>}
+            options={getOptionsProjects}
+            className="project-select"
+          />
+        </div>
+        <Tabs
+          activeKey={activeCollectionName}
+          renderTabBar={renderTabBar}
+          tabPosition="left"
+          items={listItemTabs}
+          onTabClick={handleOnTabClick}
         />
+
+        <Modal
+          title="Create a new collection"
+          open={openModalCreateCollection}
+          onOk={handleOkModalCreateCollection}
+          confirmLoading={confirmLoading}
+          onCancel={handleCancelModalCreateCollection}
+          cancelText="Cancel"
+          okText="Create"
+          width={800}
+        >
+          <FormAddCollection formCreateCollection={formCreateCollection} loading={confirmLoading} onFinishCreateCollection={onFinishCreateCollection} collections={collections} />
+        </Modal>
+
+        <Modal
+          title="Create a new document"
+          open={openModalCreateDocument}
+          onOk={handleOkModalCreateDocument}
+          confirmLoading={confirmLoading}
+          onCancel={handleCancelModalCreateDocument}
+          cancelText="Cancel"
+          okText="Create"
+          width={800}
+        >
+          <h4>Fill all fields' values to create a new document of this collection</h4>
+          <FormAddDocument keys={currentCollection?.dataKeys} formCreateDocument={formCreateDocument} loading={confirmLoading} onFinishCreateDocument={onFinishCreateDocument} />
+        </Modal>
+
+        <Modal
+          title="Update document"
+          open={openModalEditDocument}
+          onOk={handleOkModalEditDocument}
+          confirmLoading={confirmLoading}
+          onCancel={handleCancelModalEditDocument}
+          cancelText="Cancel"
+          okText="Update"
+          width={800}
+        >
+          <h4>Fill all fields' values to update this document</h4>
+          <FormEditDocument keys={currentCollection?.dataKeys} formEditDocument={formEditDocument} loading={confirmLoading} onFinishEditDocument={onFinishEditDocument} defaultValues={editingDocument && (editingDocument as any)?.data} />
+        </Modal>
+
+        <Modal
+          title="Delete this collection permanently?"
+          open={openModalDeleteCollection}
+          onOk={handleOkDeleteCollection}
+          confirmLoading={confirmLoading}
+          onCancel={handleCancelDeleteCollection}
+          cancelText="Cancel"
+          okText="Delete"
+        >
+          <p>This is a destructive operation. Are you sure to delete this collection and all its documents?</p>
+        </Modal>
+
+
       </div>
-      <Tabs
-        activeKey={activeCollectionName}
-        renderTabBar={renderTabBar}
-        tabPosition="left"
-        items={listItemTabs}
-        onTabClick={handleOnTabClick}
-      />
-
-      <Modal
-        title="Create a new collection"
-        open={openModalCreateCollection}
-        onOk={handleOkModalCreateCollection}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancelModalCreateCollection}
-        cancelText="Cancel"
-        okText="Create"
-        width={800}
-      >
-        <FormAddCollection formCreateCollection={formCreateCollection} loading={confirmLoading} onFinishCreateCollection={onFinishCreateCollection} collections={collections} />
-      </Modal>
-
-      <Modal
-        title="Create a new document"
-        open={openModalCreateDocument}
-        onOk={handleOkModalCreateDocument}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancelModalCreateDocument}
-        cancelText="Cancel"
-        okText="Create"
-        width={800}
-      >
-        <h4>Fill all fields' values to create a new document of this collection</h4>
-        <FormAddDocument keys={currentCollection?.dataKeys} formCreateDocument={formCreateDocument} loading={confirmLoading} onFinishCreateDocument={onFinishCreateDocument} />
-      </Modal>
-
-      <Modal
-        title="Update document"
-        open={openModalEditDocument}
-        onOk={handleOkModalEditDocument}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancelModalEditDocument}
-        cancelText="Cancel"
-        okText="Update"
-        width={800}
-      >
-        <h4>Fill all fields' values to update this document</h4>
-        <FormEditDocument keys={currentCollection?.dataKeys} formEditDocument={formEditDocument} loading={confirmLoading} onFinishEditDocument={onFinishEditDocument} defaultValues={editingDocument && (editingDocument as any)?.data} />
-      </Modal>
-
-      <Modal
-        title="Delete this collection permanently?"
-        open={openModalDeleteCollection}
-        onOk={handleOkDeleteCollection}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancelDeleteCollection}
-        cancelText="Cancel"
-        okText="Delete"
-      >
-        <p>This is a destructive operation. Are you sure to delete this collection and all its documents?</p>
-      </Modal>
-
-      {confirmLoading && <Loading />
+      {confirmLoading && <Loading fixed/>
       }
-    </div>
+    </>
   );
 }
 
