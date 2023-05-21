@@ -56,7 +56,7 @@ export const AppContext = createContext(null);
 
 function LayoutApp() {
   const navigate = useNavigate();
-  const { role, name } = useSelector(authSelector);
+  // const { role = '', name } = useSelector(authSelector);
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [user, setUser] = useState<any>(false);
 
@@ -66,15 +66,16 @@ function LayoutApp() {
   const menus = websiteMenus;
   const currentPath = useLocation().pathname;
 
-  const filteredMenus = menus.filter(filterRole(role));
+  // const filteredMenus = menus.filter(filterRole(role));
 
   // Generating tree-structured data for menu content.
-  const menuTree = arrayToTree(filteredMenus, 'id', 'menuParentId');
+  const menuTree = arrayToTree(menus, 'id', 'menuParentId');
 
   // Find a menu that matches the pathname.
   const currentMenu = menus.find(
     (_) => _.route && pathToRegexp(_.route).exec(currentPath)
   );
+  console.log(menus, menuTree, menus, currentMenu);
 
   // Find the key that should be selected according to the current menu.
   const selectedKeys = currentMenu
@@ -85,7 +86,7 @@ function LayoutApp() {
     userService
       .getUserInfo()
       .then((data) => {
-        if (data.msg) throw {};
+        if (data.msg) throw new Error(data.msg);
         setUser(data);
         if (currentPath === '/' || currentPath === '/admin') {
           navigate(ROUTE.DYNAMIC_DATA.OVERVIEW, { replace: true });
@@ -93,6 +94,7 @@ function LayoutApp() {
       })
       .catch((err) => {
         if (import.meta.env.PROD) window.location.href = '/sign-in';
+        console.log("Err get user info: ", err);
       });
   }, [currentPath]);
 
@@ -135,13 +137,13 @@ function LayoutApp() {
                 {MAIN_ROUTES.find((item) => item.path === currentPath)?.title}
               </h1>
             </div>
-
-            <div className="action-container">
-              <h3 className="action-container_greeting">Hi {user?.name}!</h3>
+            {user?.fullName && <div className="action-container">
+              <h3 className="action-container_greeting">{user?.fullName}</h3>
               <Button className="btn-logout" size="middle" onClick={logout}>
                 Logout
               </Button>
-            </div>
+            </div>}
+
           </Header>
           <Content
             className="site-layout-background"

@@ -13,6 +13,7 @@ import FormEditDocument from '../../components/form-edit-document/FormEditDocume
 import { DYNAMIC_DATA_TYPE } from '~/src/constant';
 import { useSearchParams } from 'react-router-dom';
 import userService from '~/src/services/user';
+import Loading from '~/src/ui/shared/loading';
 
 const renderTitle = (title: string) => <span>{title}</span>;
 
@@ -87,6 +88,7 @@ function DynamicData() {
             width: '100%',
           }}
         />
+
       </div>
     );
   };
@@ -271,11 +273,13 @@ function DynamicData() {
         if (resp.documents) {
           setDocuments(resp.documents);
         }
+        setConfirmLoading(false);
       });
     } catch (err) {
       console.log('Err get dynamic data', err);
+      setConfirmLoading(false);
+
     }
-    setConfirmLoading(false);
   }, [currentProjectId]);
 
 
@@ -290,12 +294,13 @@ function DynamicData() {
           if (!projectIdFromQueryParam) setSearchParams({
             project_id: resp.projects[0]?.id
           });
+          setConfirmLoading(false);
         }
       });
     } catch (err) {
       console.log('Err get list project', err);
+      setConfirmLoading(false);
     }
-    setConfirmLoading(false);
   }, []);
 
   useEffect(() => {
@@ -326,6 +331,7 @@ function DynamicData() {
           value={currentProjectId}
           notFoundContent={<div>No results</div>}
           options={getOptionsProjects}
+          className="project-select"
         />
       </div>
       <Tabs
@@ -388,6 +394,9 @@ function DynamicData() {
       >
         <p>This is a destructive operation. Are you sure to delete this collection and all its documents?</p>
       </Modal>
+
+      {confirmLoading && <Loading />
+      }
     </div>
   );
 }

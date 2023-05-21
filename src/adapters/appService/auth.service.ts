@@ -83,22 +83,22 @@ export function useAuth() {
       //   throw new Error(JSON.stringify(resp));
       // }
 
-      const logoutData = {
-        msg: 'Logout success',
-        code: 0,
-        data: null,
-        success: true,
-      };
+      // const logoutData = {
+      //   msg: 'Logout success',
+      //   code: 0,
+      //   data: null,
+      //   success: true,
+      // };
       userService.signOut();
 
-      dispatch(
-        setUserInfo({
-          name: '',
-          role: '',
-        })
-      );
-      window.location.href = '/sign-in';
-      return logoutData;
+      // dispatch(
+      //   setUserInfo({
+      //     name: '',
+      //     role: '',
+      //   })
+      // );
+      if (import.meta.env.PROD) window.location.href = '/sign-in';
+      // return logoutData;
     },
   };
 }
