@@ -393,7 +393,7 @@ function DynamicData() {
           cancelText="Cancel"
           okText="Delete"
         >
-          <p>This is a destructive operation. Are you sure to delete this collection and all its documents?</p>
+          <p>Deleting this collection and all its documents will affect all data that is using them. Are you certain you want to proceed?</p>
         </Modal>
 
 
