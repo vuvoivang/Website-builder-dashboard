@@ -43,7 +43,7 @@ const TabCollection = (props) => {
     <Row>
       <Button style={{ color: "#ff0000", marginRight: 16, fontWeight: 600 }} onClick={() => setOpenModalDeleteCollection(true)}><DeleteOutlined style={{
         fontSize: 16,
-      }} />Delete this collection</Button>
+      }} />Delete collection</Button>
       <Button onClick={() => setOpenModalCreateDocument(true)}><PlusOutlined />Insert Document</Button>
     </Row>
 
