@@ -17,6 +17,7 @@ import { arrayToTree, queryAncestors } from '~/src/utils/menu';
 import { renderRoutes } from '~/src/utils/route';
 import ROUTE from '~/src/constant/routes';
 import userService from '~/src/services/user';
+import AvatarZone from '../AvatarZone';
 
 const { Header, Sider, Content } = Layout;
 
@@ -137,12 +138,14 @@ function LayoutApp() {
                 {MAIN_ROUTES.find((item) => item.path === currentPath)?.title}
               </h1>
             </div>
-            {user?.fullName && <div className="action-container">
+            {/* {user?.fullName && <div className="action-container">
               <h3 className="action-container_greeting">{user?.fullName}</h3>
               <Button className="btn-logout" size="middle" onClick={logout}>
                 Logout
               </Button>
-            </div>}
+            </div>} */}
+
+            {user?.fullName && <AvatarZone user={user} handleLogout={logout}/>}
 
           </Header>
           <Content

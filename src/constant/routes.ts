@@ -5,6 +5,7 @@ const ROUTE = {
     DOCUMENT: "admin/dynamic-data/document",
   },
   LOGIN: "admin/login",
+  PROFILE: "admin/profile",
 };
 
 export default ROUTE;
