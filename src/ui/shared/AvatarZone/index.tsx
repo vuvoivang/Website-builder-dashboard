@@ -27,6 +27,8 @@ const items: MenuProps['items'] = [
 
 const AvatarZone: React.FC<any> = ({ user, handleLogout }) => {
   const userFullName = user.fullName;
+  const avatarUrl = user.avatarUrl;
+
   const navigate = useNavigate();
 
   const firstLetterName = userFullName.charAt(userFullName.lastIndexOf(' ') + 1);
@@ -54,7 +56,7 @@ const AvatarZone: React.FC<any> = ({ user, handleLogout }) => {
       <Dropdown menu={menuProps} placement="bottom">
         <Button>
           <Space>
-            <Avatar size={40} >{firstLetterName}</Avatar>
+            {avatarUrl ? <Avatar size={40} src={avatarUrl} /> : <Avatar size={40} >{firstLetterName}</Avatar>}
           </Space>
         </Button>
       </Dropdown>
