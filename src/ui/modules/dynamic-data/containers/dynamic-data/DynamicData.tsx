@@ -14,6 +14,7 @@ import { DYNAMIC_DATA_TYPE } from '~/src/constant';
 import { useSearchParams } from 'react-router-dom';
 import userService from '~/src/services/user';
 import Loading from '~/src/ui/shared/loading';
+import GenDatabaseScriptZone from '../../components/gen-script-zone';
 
 const renderTitle = (title: string) => <span>{title}</span>;
 
@@ -334,6 +335,8 @@ function DynamicData() {
             options={getOptionsProjects}
             className="project-select"
           />
+
+          <GenDatabaseScriptZone projectId={currentProjectId} />
         </div>
         <Tabs
           activeKey={activeCollectionName}

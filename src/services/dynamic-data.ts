@@ -14,6 +14,13 @@ export type Document = {
   data: Record<string, any>;
   collectionId: number;
 };
+export enum DatabaseSystem {
+  UNKNOWN = 0,
+  MYSQL = 1,
+  POSTGRES = 2,
+  SQLSERVER = 3,
+  SQLITE = 4,
+}
 
 const SERVICE_NAME = 'dynamic-data-service';
 
@@ -67,6 +74,13 @@ const deleteDocument = (id: string) => {
   });
 };
 
+const getScript = (projectId: string, databaseSystem: DatabaseSystem) => {
+  return fetchWithBuildifyToken(generateUrlByService(SERVICE_NAME, 'database/script'), 'GET', {
+    projectId,
+    databaseSystem,
+  });
+};
+
 const dynamicDataService = {
   getCollection,
   getCollectionMap,
@@ -79,5 +93,6 @@ const dynamicDataService = {
   addDocument,
   updateDocument,
   deleteDocument,
+  getScript,
 };
 export default dynamicDataService;
