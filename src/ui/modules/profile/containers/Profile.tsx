@@ -50,7 +50,9 @@ const Profile = () => {
               fieldName='avatarUrl'
               maxSize={5 * 1024 * 1024}
               disabled
-              value={userInfo.avatarUrl} />
+              value={userInfo.avatarUrl} 
+              />
+              <h4 style={{textAlign: 'center'}}>Avatar</h4>
           </Form.Item>
           <div>
             <p className='profile-info-item'><strong>Username:</strong> {userInfo.username}</p>
@@ -66,6 +68,7 @@ const Profile = () => {
                 fieldName='avatarUrl'
                 maxSize={5 * 1024 * 1024}
                 disabled={mode === 'view'} />
+                <h4 style={{textAlign: 'center'}}>Avatar</h4>
             </Form.Item>
             <div>
               <Form.Item

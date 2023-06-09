@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Upload, message } from 'antd';
 import { UploadChangeParam } from 'antd/lib/upload';
 
@@ -27,21 +27,10 @@ const UploadButton: React.FC<Partial<UploadButtonProps>> = (props) => {
     <div>
       {loading ? (
         <LoadingOutlined />
-      ) : (
-        <span className="anticon anticon-camera" role="img" aria-label="camera">
-          <svg
-            viewBox="64 64 896 896"
-            focusable="false"
-            data-icon="camera"
-            width="1em"
-            height="1em"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path d="M864 260H728l-32.4-90.8a32.07 32.07 0 00-30.2-21.2H358.6c-13.5 0-25.6 8.5-30.1 21.2L296 260H160c-44.2 0-80 35.8-80 80v456c0 44.2 35.8 80 80 80h704c44.2 0 80-35.8 80-80V340c0-44.2-35.8-80-80-80zM512 716c-88.4 0-160-71.6-160-160s71.6-160 160-160 160 71.6 160 160-71.6 160-160 160zm-96-160a96 96 0 10192 0 96 96 0 10-192 0z"></path>
-          </svg>
-        </span>
-      )}
+      ) : <div className="anticon anticon-camera" role="img" aria-label="camera">
+        <PlusOutlined />
+        <div style={{ marginTop: 8 }}>Upload</div>
+      </div>}
     </div>
   );
 
@@ -72,8 +61,11 @@ const UploadButton: React.FC<Partial<UploadButtonProps>> = (props) => {
 
     if (info.file.status === 'error') {
       logger.debug('error', info.file);
-      setLoading(false);
-      message.error(`${info.file.name} file upload failed`);
+      setTimeout(() => {
+        setLoading(false)
+        message.error(`${info.file.name} file upload failed`);
+      }, 1000);
+
     }
   };
 
