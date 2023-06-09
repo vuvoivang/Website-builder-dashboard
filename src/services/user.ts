@@ -33,7 +33,7 @@ const getUserInfo = () => {
   return fetchWithBuildifyToken(generateUrlByService(SERVICE_NAME, 'user'), 'GET');
 };
 
-const updateUser = (data: { password: string; fullName: string; email: string }) => {
+const updateUser = (data: { avatarUrl: string; fullName: string; email: string, username: string }) => {
   return fetchWithBuildifyToken(generateUrlByService(SERVICE_NAME, 'user'), 'PUT', data);
 };
 

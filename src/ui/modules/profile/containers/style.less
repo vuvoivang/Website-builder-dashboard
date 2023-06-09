@@ -1,0 +1,28 @@
+.profile-container{
+  &_header{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .info-zone{
+    padding: 32px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    & > div{
+      &:last-child{
+        width: 70%;
+      }
+    }
+  }
+  .profile-info-item{
+    font-size: 18px;
+    strong{
+      margin-right: 8px;
+    }
+  }
+  .ant-upload.ant-upload-select-picture-card{
+    width: 150px;
+    height: 150px;
+  }
+}
