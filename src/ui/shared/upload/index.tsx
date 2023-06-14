@@ -42,10 +42,12 @@ const UploadButton: React.FC<Partial<UploadButtonProps>> = (props) => {
     }
 
     if (info.file.status === 'done') {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
       logger.debug('uploaded!', info.file);
 
-      const urlFile: string = info.file.response?.data?.url;
+      const urlFile: string = info.file.response?.url;
 
       if (urlFile) {
         logger.debug('urlFile | uploaded', urlFile);
@@ -62,10 +64,12 @@ const UploadButton: React.FC<Partial<UploadButtonProps>> = (props) => {
     if (info.file.status === 'error') {
       logger.debug('error', info.file);
       setTimeout(() => {
-        setLoading(false)
-        message.error(`${info.file.name} file upload failed`);
+        setLoading(false);
       }, 1000);
-
+      // setTimeout(() => {
+      //   setLoading(false)
+      //   message.error(`${info.file.name} file upload failed`);
+      // }, 1000);
     }
   };
 
@@ -83,8 +87,7 @@ const UploadButton: React.FC<Partial<UploadButtonProps>> = (props) => {
       headers={headerConfig}
       disabled={props?.disabled}
     >
-      {value ? <img src={value} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-      {/* {uploadButton} */}
+      {loading ? <LoadingOutlined /> : value ? <img src={value} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
     </Upload>
   );
 };

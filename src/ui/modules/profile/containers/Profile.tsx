@@ -23,16 +23,16 @@ const Profile = () => {
 
   const handleEditMode = () => {
     setMode('edit');
+    form.setFieldsValue(userInfo);
   };
 
   const handleSave = (values) => {
     userService.updateUser(values).then((response) => {
-      if(!response.msg){
+      if (!response.msg) {
         window.location.reload();
       }
     })
   };
-
   return (
     <div className='profile-container'>
       <div className='profile-container_header'>
@@ -50,9 +50,9 @@ const Profile = () => {
               fieldName='avatarUrl'
               maxSize={5 * 1024 * 1024}
               disabled
-              value={userInfo.avatarUrl} 
-              />
-              <h4 style={{textAlign: 'center'}}>Avatar</h4>
+              value={userInfo.avatarUrl}
+            />
+            <h4 style={{ textAlign: 'center' }}>Avatar</h4>
           </Form.Item>
           <div>
             <p className='profile-info-item'><strong>Username:</strong> {userInfo.username}</p>
@@ -63,12 +63,15 @@ const Profile = () => {
         <Form form={form} initialValues={userInfo} onFinish={handleSave} layout="vertical">
           <div className='info-zone'>
             <Form.Item name="avatarUrl">
-              <UploadImage form={form}
-                msg='Image size is exceed 5MB'
-                fieldName='avatarUrl'
-                maxSize={5 * 1024 * 1024}
-                disabled={mode === 'view'} />
-                <h4 style={{textAlign: 'center'}}>Avatar</h4>
+              <>
+                <UploadImage form={form}
+                  msg='Image size is exceed 5MB'
+                  fieldName='avatarUrl'
+                  maxSize={5 * 1024 * 1024}
+                  disabled={mode === 'view'}
+                />
+                <h4 style={{ textAlign: 'center' }}>Avatar</h4>
+              </>
             </Form.Item>
             <div>
               <Form.Item
