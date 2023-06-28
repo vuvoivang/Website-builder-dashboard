@@ -168,6 +168,7 @@ function DynamicData() {
       console.log('Err add collection', err);
       errorMsg('Create Collection Failed');
     }
+    formCreateCollection.resetFields();
     setConfirmLoading(false);
     setOpenModalCreateCollection(false);
   };
@@ -198,6 +199,7 @@ function DynamicData() {
     } catch (err) {
       console.log('Err add document', err); errorMsg('Create Document Failed');
     }
+    formCreateDocument.resetFields();
     setConfirmLoading(false);
     setOpenModalCreateDocument(false);
   };
@@ -234,6 +236,7 @@ function DynamicData() {
       setEditingDocument(null);
       setOpenModalEditDocument(false);
     }
+    formEditDocument.resetFields();
     setConfirmLoading(false);
     setOpenModalCreateDocument(false);
   };
