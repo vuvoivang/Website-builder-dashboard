@@ -7,7 +7,7 @@ website: [buildify.vercel.app](https://buildify.vercel.app/admin)
 ## Installation
 
 ### download packages
-yarn install
+npm install
 
 ### run dev local
 npm run dev
