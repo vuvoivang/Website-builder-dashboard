@@ -6,13 +6,13 @@ website: [buildify.vercel.app](https://buildify.vercel.app/admin)
 
 ## Installation
 
-# download packages
+### download packages
 yarn install
 
-# Run dev local
+### run dev local
 npm run dev
 
-# Building and deploying in production
+### building and deploying in production
 npm run build
 
 
