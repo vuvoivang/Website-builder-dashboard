@@ -32,7 +32,7 @@ const GenDatabaseScriptZone: React.FC<any> = ({ projectId }) => {
     try {
       dynamicDataService.getScript(projectId, databaseSystem).then((resp: any) => {
         if (!resp.msg) {
-          fileDownload(resp.url, resp.url.substr(resp.url.lastIndexOf('/') + 1));
+          window.open(resp.url, '_blank');
         } else errorMsg('Gen script failed, please try again later');
       });
     } catch (err) {
